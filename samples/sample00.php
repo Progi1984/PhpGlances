@@ -47,6 +47,20 @@
     echo '<br />';
   }
 
+  echo 'getAllLimits : <br />';
+  echo '> CPU_IOWait : '.json_encode($oGlances->limit_getCPU_IOWait()).'<br />';
+  echo '> CPUSystem : '.json_encode($oGlances->limit_getCPUSystem()).'<br />';
+  echo '> CPUUser : '.json_encode($oGlances->limit_getCPUUser()).'<br />';
+  echo '> FS : '.json_encode($oGlances->limit_getFS()).'<br />';
+  echo '> Load : '.json_encode($oGlances->limit_getLoad()).'<br />';
+  echo '> Mem : '.json_encode($oGlances->limit_getMem()).'<br />';
+  echo '> ProcessCPU : '.json_encode($oGlances->limit_getProcessCPU()).'<br />';
+  echo '> ProcessMem : '.json_encode($oGlances->limit_getProcessMem()).'<br />';
+  echo '> STD : '.json_encode($oGlances->limit_getSTD()).'<br />';
+  echo '> SWAP : '.json_encode($oGlances->limit_getSWAP()).'<br />';
+  echo '> Temp : '.json_encode($oGlances->limit_getTemp()).'<br />';
+  echo '<br />';
+
   echo 'getLoad : <br />';
   echo ' > Min1 : '.$oGlances->load_getMin1().'<br />';
   echo ' > Min5 : '.$oGlances->load_getMin5().'<br />';
@@ -120,9 +134,9 @@
   echo '<br />';
 
   echo 'getSystem : <br />';
-  echo ' >> Hostname : '.$oGlances->system_getHostname().'<br />';
-  echo ' >> Linux Distrib : '.$oGlances->system_getLinuxDistro().'<br />';
-  echo ' >> OSName : '.$oGlances->system_getOSName().'<br />';
-  echo ' >> OSVersion : '.$oGlances->system_getOSVersion().'<br />';
-  echo ' >> Platform : '.$oGlances->system_getPlatform().'<br />';
+  echo ' > Hostname : '.$oGlances->system_getHostname().'<br />';
+  echo ' > Linux Distrib : '.$oGlances->system_getLinuxDistro().'<br />';
+  echo ' > OSName : '.$oGlances->system_getOSName().'<br />';
+  echo ' > OSVersion : '.$oGlances->system_getOSVersion().'<br />';
+  echo ' > Platform : '.$oGlances->system_getPlatform().'<br />';
   echo '<br />';

@@ -291,6 +291,142 @@
       }
     }
 
+    private function getLimits(){
+      return json_decode($this->_api('getAllLimits'), true);
+    }
+    public function limit_getSTD(){
+      $res = $this->getLimits();
+      if($res === false){
+        return false;
+      } else {
+        if(isset($res['STD'])){
+          return $res['STD'];
+        } else {
+          return 0;
+        }
+      }
+    }
+    public function limit_getCPU_IOWait(){
+      $res = $this->getLimits();
+      if($res === false){
+        return false;
+      } else {
+        if(isset($res['CPU_IOWAIT'])){
+          return $res['CPU_IOWAIT'];
+        } else {
+          return 0;
+        }
+      }
+    }
+    public function limit_getFS(){
+      $res = $this->getLimits();
+      if($res === false){
+        return false;
+      } else {
+        if(isset($res['FS'])){
+          return $res['FS'];
+        } else {
+          return 0;
+        }
+      }
+    }
+    public function limit_getLoad(){
+      $res = $this->getLimits();
+      if($res === false){
+        return false;
+      } else {
+        if(isset($res['LOAD'])){
+          return $res['LOAD'];
+        } else {
+          return 0;
+        }
+      }
+    }
+    public function limit_getCPUSystem(){
+      $res = $this->getLimits();
+      if($res === false){
+        return false;
+      } else {
+        if(isset($res['CPU_SYSTEM'])){
+          return $res['CPU_SYSTEM'];
+        } else {
+          return 0;
+        }
+      }
+    }
+    public function limit_getProcessMem(){
+      $res = $this->getLimits();
+      if($res === false){
+        return false;
+      } else {
+        if(isset($res['PROCESS_MEM'])){
+          return $res['PROCESS_MEM'];
+        } else {
+          return 0;
+        }
+      }
+    }
+    public function limit_getTemp(){
+      $res = $this->getLimits();
+      if($res === false){
+        return false;
+      } else {
+        if(isset($res['TEMP'])){
+          return $res['TEMP'];
+        } else {
+          return 0;
+        }
+      }
+    }
+    public function limit_getMem(){
+      $res = $this->getLimits();
+      if($res === false){
+        return false;
+      } else {
+        if(isset($res['MEM'])){
+          return $res['MEM'];
+        } else {
+          return 0;
+        }
+      }
+    }
+    public function limit_getCPUUser(){
+      $res = $this->getLimits();
+      if($res === false){
+        return false;
+      } else {
+        if(isset($res['CPU_USER'])){
+          return $res['CPU_USER'];
+        } else {
+          return 0;
+        }
+      }
+    }
+    public function limit_getProcessCPU(){
+      $res = $this->getLimits();
+      if($res === false){
+        return false;
+      } else {
+        if(isset($res['PROCESS_CPU'])){
+          return $res['PROCESS_CPU'];
+        } else {
+          return 0;
+        }
+      }
+    }
+    public function limit_getSWAP(){
+      $res = $this->getLimits();
+      if($res === false){
+        return false;
+      } else {
+        if(isset($res['SWAP'])){
+          return $res['SWAP'];
+        } else {
+          return 0;
+        }
+      }
+    }
+
     private function getMem(){
       return json_decode($this->_api('getMem'), true);
     }
