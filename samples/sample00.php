@@ -80,3 +80,8 @@
     echo ' >> TX : '.$oGlances->network_getTX($inc).'<br />';
     echo '<br />';
   }
+
+  $res = $oGlances->getNow();
+  echo 'getNow : <br />';
+  echo 'Now : '.$res.'<br />';
+  echo '<br />';

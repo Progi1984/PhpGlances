@@ -38,6 +38,7 @@
     public function listMethods(){
       return $this->_api('system.listMethods');
     }
+
     public function getCore(){
       return $this->_api('getCore');
     }
@@ -478,4 +479,7 @@
       }
     }
 
+    public function getNow(){
+      return $this->_api('getNow');
+    }
   }
