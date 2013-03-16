@@ -534,4 +534,150 @@
         }
       }
     }
+
+    private function getProcessList(){
+      return json_decode($this->_api('getProcessList'), true);
+    }
+    public function processlist_getCount(){
+      $res = $this->getProcessList();
+      if($res === false){
+        return false;
+      } else {
+        return count($res);
+      }
+    }
+    public function processlist_getUserName($piIdx){
+      $res = $this->getProcessList();
+      if($res === false){
+        return false;
+      } else {
+        if(isset($res[$piIdx]['username'])){
+          return $res[$piIdx]['username'];
+        } else {
+          return '';
+        }
+      }
+    }
+    public function processlist_getStatus($piIdx){
+      $res = $this->getProcessList();
+      if($res === false){
+        return false;
+      } else {
+        if(isset($res[$piIdx]['status'])){
+          return $res[$piIdx]['status'];
+        } else {
+          return '';
+        }
+      }
+    }
+    public function processlist_getCpuTimes($piIdx){
+      $res = $this->getProcessList();
+      if($res === false){
+        return false;
+      } else {
+        if(isset($res[$piIdx]['cpu_times'])){
+          return $res[$piIdx]['cpu_times'];
+        } else {
+          return array();
+        }
+      }
+    }
+    public function processlist_getName($piIdx){
+      $res = $this->getProcessList();
+      if($res === false){
+        return false;
+      } else {
+        if(isset($res[$piIdx]['name'])){
+          return $res[$piIdx]['name'];
+        } else {
+          return '';
+        }
+      }
+    }
+    public function processlist_getMemoryPercent($piIdx){
+      $res = $this->getProcessList();
+      if($res === false){
+        return false;
+      } else {
+        if(isset($res[$piIdx]['memory_percent'])){
+          return $res[$piIdx]['memory_percent'];
+        } else {
+          return 0;
+        }
+      }
+    }
+    public function processlist_getCpuPercent($piIdx){
+      $res = $this->getProcessList();
+      if($res === false){
+        return false;
+      } else {
+        if(isset($res[$piIdx]['cpu_percent'])){
+          return $res[$piIdx]['cpu_percent'];
+        } else {
+          return 0;
+        }
+      }
+    }
+    public function processlist_getPid($piIdx){
+      $res = $this->getProcessList();
+      if($res === false){
+        return false;
+      } else {
+        if(isset($res[$piIdx]['pid'])){
+          return $res[$piIdx]['pid'];
+        } else {
+          return 0;
+        }
+      }
+    }
+    public function processlist_getIOCounters($piIdx){
+      $res = $this->getProcessList();
+      if($res === false){
+        return false;
+      } else {
+        if(isset($res[$piIdx]['io_counters'])){
+          return $res[$piIdx]['io_counters'];
+        } else {
+          return array();
+        }
+      }
+    }
+    public function processlist_getCommandLine($piIdx){
+      $res = $this->getProcessList();
+      if($res === false){
+        return false;
+      } else {
+        if(isset($res[$piIdx]['cmdline'])){
+          return $res[$piIdx]['cmdline'];
+        } else {
+          return '';
+        }
+      }
+    }
+    public function processlist_getMemoryInfo($piIdx){
+      $res = $this->getProcessList();
+      if($res === false){
+        return false;
+      } else {
+        if(isset($res[$piIdx]['memory_info'])){
+          return $res[$piIdx]['memory_info'];
+        } else {
+          return array();
+        }
+      }
+    }
+    public function processlist_getNice($piIdx){
+      $res = $this->getProcessList();
+      if($res === false){
+        return false;
+      } else {
+        if(isset($res[$piIdx]['nice'])){
+          return $res[$piIdx]['nice'];
+        } else {
+          return 0;
+        }
+      }
+    }
+
+
   }

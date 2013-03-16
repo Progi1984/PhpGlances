@@ -90,3 +90,21 @@
   echo ' > Total : '.$oGlances->processcount_getTotal().'<br />';
   echo ' > Zombie : '.$oGlances->processcount_getZombie().'<br />';
   echo '<br />';
+
+  echo 'getProcessList : <br />';
+  $numProcess = $oGlances->processlist_getCount();
+  echo ' > count : '.$numProcess.'<br />';
+  for($inc = 0 ; $inc < $numProcess ; $inc++){
+    echo ' >> User Name : '.$oGlances->processlist_getUserName($inc).'<br />';
+    echo ' >> Status : '.$oGlances->processlist_getStatus($inc).'<br />';
+    echo ' >> CPU Times : '.json_encode($oGlances->processlist_getCpuTimes($inc)).'<br />';
+    echo ' >> Name : '.$oGlances->processlist_getName($inc).'<br />';
+    echo ' >> Memory Percent : '.$oGlances->processlist_getMemoryPercent($inc).'<br />';
+    echo ' >> CPU Percent : '.$oGlances->processlist_getCpuPercent($inc).'<br />';
+    echo ' >> PID : '.$oGlances->processlist_getPid($inc).'<br />';
+    echo ' >> IO Counters : '.json_encode($oGlances->processlist_getIOCounters($inc)).'<br />';
+    echo ' >> CommandLine : '.$oGlances->processlist_getCommandLine($inc).'<br />';
+    echo ' >> MemoryInfo : '.json_encode($oGlances->processlist_getMemoryInfo($inc)).'<br />';
+    echo ' >> Nice : '.$oGlances->processlist_getNice($inc).'<br />';
+    echo '<br />';
+  }
