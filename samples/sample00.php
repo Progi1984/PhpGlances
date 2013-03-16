@@ -53,3 +53,14 @@
   echo ' > Min5 : '.$oGlances->load_getMin5().'<br />';
   echo ' > Min15 : '.$oGlances->load_getMin15().'<br />';
   echo '<br />';
+
+  echo 'getMem : <br />';
+  echo ' > Active : '.$oGlances->mem_getActive().'<br />';
+  echo ' > Buffers : '.$oGlances->mem_getBuffers().'<br />';
+  echo ' > Cached : '.$oGlances->mem_getCached().'<br />';
+  echo ' > Free : '.$oGlances->mem_getFree().'<br />';
+  echo ' > Inactive : '.$oGlances->mem_getInactive().'<br />';
+  echo ' > Percent : '.$oGlances->mem_getPercent().'<br />';
+  echo ' > Total : '.$oGlances->mem_getTotal().'<br />';
+  echo ' > Used : '.$oGlances->mem_getUsed().'<br />';
+  echo '<br />';

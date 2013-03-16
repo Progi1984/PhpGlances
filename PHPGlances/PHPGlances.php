@@ -289,4 +289,107 @@
         }
       }
     }
+
+    private function getMem(){
+      return json_decode($this->_api('getMem'), true);
+    }
+    public function mem_getInactive(){
+      $res = $this->getMem();
+      if($res === false){
+        return false;
+      } else {
+        if(isset($res['inactive'])){
+          return $res['inactive'];
+        } else {
+          return 0;
+        }
+      }
+    }
+    public function mem_getCached(){
+      $res = $this->getMem();
+      if($res === false){
+        return false;
+      } else {
+        if(isset($res['cached'])){
+          return $res['cached'];
+        } else {
+          return 0;
+        }
+      }
+    }
+    public function mem_getUsed(){
+      $res = $this->getMem();
+      if($res === false){
+        return false;
+      } else {
+        if(isset($res['used'])){
+          return $res['used'];
+        } else {
+          return 0;
+        }
+      }
+    }
+    public function mem_getBuffers(){
+      $res = $this->getMem();
+      if($res === false){
+        return false;
+      } else {
+        if(isset($res['buffers'])){
+          return $res['buffers'];
+        } else {
+          return 0;
+        }
+      }
+    }
+    public function mem_getActive(){
+      $res = $this->getMem();
+      if($res === false){
+        return false;
+      } else {
+        if(isset($res['active'])){
+          return $res['active'];
+        } else {
+          return 0;
+        }
+      }
+    }
+    public function mem_getTotal(){
+      $res = $this->getMem();
+      if($res === false){
+        return false;
+      } else {
+        if(isset($res['total'])){
+          return $res['total'];
+        } else {
+          return 0;
+        }
+      }
+    }
+    public function mem_getPercent(){
+    $res = $this->getMem();
+    if($res === false){
+      return false;
+    } else {
+      if(isset($res['percent'])){
+        return $res['percent'];
+      } else {
+        return 0;
+      }
+    }
+  }
+    public function mem_getFree(){
+      $res = $this->getMem();
+      if($res === false){
+        return false;
+      } else {
+        if(isset($res['free'])){
+          return $res['free'];
+        } else {
+          return 0;
+        }
+      }
+    }
+
+
+
   }
