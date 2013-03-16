@@ -679,5 +679,39 @@
       }
     }
 
-
+    private function getSensors(){
+      return json_decode($this->_api('getSensors'), true);
+    }
+    public function sensors_getCount(){
+      $res = $this->getSensors();
+      if($res === false){
+        return false;
+      } else {
+        return count($res);
+      }
+    }
+    public function sensors_getValue($piIdx){
+      $res = $this->getSensors();
+      if($res === false){
+        return false;
+      } else {
+        if(isset($res[$piIdx]['value'])){
+          return $res[$piIdx]['value'];
+        } else {
+          return '';
+        }
+      }
+    }
+    public function sensors_getLabel($piIdx){
+      $res = $this->getSensors();
+      if($res === false){
+        return false;
+      } else {
+        if(isset($res[$piIdx]['label'])){
+          return $res[$piIdx]['label'];
+        } else {
+          return '';
+        }
+      }
+    }
   }

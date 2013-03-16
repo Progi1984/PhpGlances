@@ -108,3 +108,12 @@
     echo ' >> Nice : '.$oGlances->processlist_getNice($inc).'<br />';
     echo '<br />';
   }
+
+  echo 'getSensors : <br />';
+  $numSensors = $oGlances->sensors_getCount();
+  echo ' > count : '.$numSensors.'<br />';
+  for($inc = 0 ; $inc < $numSensors ; $inc++){
+    echo ' >> Label : '.$oGlances->sensors_getLabel($inc).'<br />';
+    echo ' >> Value : '.$oGlances->sensors_getValue($inc).'<br />';
+    echo '<br />';
+  }
