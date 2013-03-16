@@ -390,6 +390,44 @@
       }
     }
 
-
+    private function getMemSwap(){
+      return json_decode($this->_api('getMemSwap'), true);
+    }
+    public function memswap_getTotal(){
+      $res = $this->getMemSwap();
+      if($res === false){
+        return false;
+      } else {
+        if(isset($res['total'])){
+          return $res['total'];
+        } else {
+          return 0;
+        }
+      }
+    }
+    public function memswap_getPercent(){
+      $res = $this->getMemSwap();
+      if($res === false){
+        return false;
+      } else {
+        if(isset($res['percent'])){
+          return $res['percent'];
+        } else {
+          return 0;
+        }
+      }
+    }
+    public function memswap_getUsed(){
+      $res = $this->getMemSwap();
+      if($res === false){
+        return false;
+      } else {
+        if(isset($res['used'])){
+          return $res['used'];
+        } else {
+          return 0;
+        }
+      }
+    }
 
   }

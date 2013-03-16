@@ -64,3 +64,9 @@
   echo ' > Total : '.$oGlances->mem_getTotal().'<br />';
   echo ' > Used : '.$oGlances->mem_getUsed().'<br />';
   echo '<br />';
+
+  echo 'getMemSwap : <br />';
+  echo ' > Percent : '.$oGlances->memswap_getPercent().'<br />';
+  echo ' > Total : '.$oGlances->memswap_getTotal().'<br />';
+  echo ' > Used : '.$oGlances->memswap_getUsed().'<br />';
+  echo '<br />';
