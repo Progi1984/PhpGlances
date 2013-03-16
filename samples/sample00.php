@@ -117,3 +117,12 @@
     echo ' >> Value : '.$oGlances->sensors_getValue($inc).'<br />';
     echo '<br />';
   }
+  echo '<br />';
+
+  echo 'getSystem : <br />';
+  echo ' >> Hostname : '.$oGlances->system_getHostname().'<br />';
+  echo ' >> Linux Distrib : '.$oGlances->system_getLinuxDistro().'<br />';
+  echo ' >> OSName : '.$oGlances->system_getOSName().'<br />';
+  echo ' >> OSVersion : '.$oGlances->system_getOSVersion().'<br />';
+  echo ' >> Platform : '.$oGlances->system_getPlatform().'<br />';
+  echo '<br />';

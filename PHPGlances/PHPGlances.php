@@ -714,4 +714,68 @@
         }
       }
     }
+
+    private function getSystem(){
+      return json_decode($this->_api('getSystem'), true);
+    }
+    public function system_getLinuxDistro(){
+      $res = $this->getSystem();
+      if($res === false){
+        return false;
+      } else {
+        if(isset($res['linux_distro'])){
+          return $res['linux_distro'];
+        } else {
+          return '';
+        }
+      }
+    }
+    public function system_getPlatform(){
+      $res = $this->getSystem();
+      if($res === false){
+        return false;
+      } else {
+        if(isset($res['platform'])){
+          return $res['platform'];
+        } else {
+          return '';
+        }
+      }
+    }
+    public function system_getOSName(){
+      $res = $this->getSystem();
+      if($res === false){
+        return false;
+      } else {
+        if(isset($res['os_name'])){
+          return $res['os_name'];
+        } else {
+          return '';
+        }
+      }
+    }
+    public function system_getHostname(){
+      $res = $this->getSystem();
+      if($res === false){
+        return false;
+      } else {
+        if(isset($res['hostname'])){
+          return $res['hostname'];
+        } else {
+          return '';
+        }
+      }
+    }
+    public function system_getOSVersion(){
+      $res = $this->getSystem();
+      if($res === false){
+        return false;
+      } else {
+        if(isset($res['os_version'])){
+          return $res['os_version'];
+        } else {
+          return '';
+        }
+      }
+    }
   }
