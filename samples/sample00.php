@@ -11,9 +11,8 @@
   }
   echo '</ul>';
 
-  $res = $oGlances->getCore();
   echo 'getCore : <br />';
-  echo 'Core : '.$res.'<br />';
+  echo 'Core : '.$oGlances->getCore().'<br />';
   echo '<br />';
 
   echo 'getCpu : <br />';
@@ -81,7 +80,13 @@
     echo '<br />';
   }
 
-  $res = $oGlances->getNow();
   echo 'getNow : <br />';
-  echo 'Now : '.$res.'<br />';
+  echo 'Now : '.$oGlances->getNow().'<br />';
+  echo '<br />';
+
+  echo 'getProcessCount : <br />';
+  echo ' > Running : '.$oGlances->processcount_getRunning().'<br />';
+  echo ' > Sleeping : '.$oGlances->processcount_getSleeping().'<br />';
+  echo ' > Total : '.$oGlances->processcount_getTotal().'<br />';
+  echo ' > Zombie : '.$oGlances->processcount_getZombie().'<br />';
   echo '<br />';

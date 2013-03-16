@@ -482,4 +482,56 @@
     public function getNow(){
       return $this->_api('getNow');
     }
+
+    private function getProcessCount(){
+      return json_decode($this->_api('getProcessCount'), true);
+    }
+    public function processcount_getZombie(){
+      $res = $this->getProcessCount();
+      if($res === false){
+        return false;
+      } else {
+        if(isset($res['zombie'])){
+          return $res['zombie'];
+        } else {
+          return 0;
+        }
+      }
+    }
+    public function processcount_getRunning(){
+      $res = $this->getProcessCount();
+      if($res === false){
+        return false;
+      } else {
+        if(isset($res['running'])){
+          return $res['running'];
+        } else {
+          return 0;
+        }
+      }
+    }
+    public function processcount_getTotal(){
+      $res = $this->getProcessCount();
+      if($res === false){
+        return false;
+      } else {
+        if(isset($res['total'])){
+          return $res['total'];
+        } else {
+          return 0;
+        }
+      }
+    }
+    public function processcount_getSleeping(){
+      $res = $this->getProcessCount();
+      if($res === false){
+        return false;
+      } else {
+        if(isset($res['sleeping'])){
+          return $res['sleeping'];
+        } else {
+          return 0;
+        }
+      }
+    }
   }
