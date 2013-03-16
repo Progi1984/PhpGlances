@@ -165,4 +165,88 @@
         }
       }
     }
+
+    private function getFs(){
+      return json_decode($this->_api('getFs'), true);
+    }
+    public function fs_getCount(){
+      $res = $this->getFs();
+      if($res === false){
+        return false;
+      } else {
+        return count($res);
+      }
+    }
+    public function fs_getMountPoint($piIdx){
+      $res = $this->getFs();
+      if($res === false){
+        return false;
+      } else {
+        if(isset($res[$piIdx]['mnt_point'])){
+          return $res[$piIdx]['mnt_point'];
+        } else {
+          return '';
+        }
+      }
+    }
+    public function fs_getDeviceName($piIdx){
+      $res = $this->getFs();
+      if($res === false){
+        return false;
+      } else {
+        if(isset($res[$piIdx]['device_name'])){
+          return $res[$piIdx]['device_name'];
+        } else {
+          return '';
+        }
+      }
+    }
+    public function fs_getFileSystemType($piIdx){
+      $res = $this->getFs();
+      if($res === false){
+        return false;
+      } else {
+        if(isset($res[$piIdx]['fs_type'])){
+          return $res[$piIdx]['fs_type'];
+        } else {
+          return '';
+        }
+      }
+    }
+    public function fs_getUsed($piIdx){
+      $res = $this->getFs();
+      if($res === false){
+        return false;
+      } else {
+        if(isset($res[$piIdx]['used'])){
+          return $res[$piIdx]['used'];
+        } else {
+          return 0;
+        }
+      }
+    }
+    public function fs_getAvailable($piIdx){
+      $res = $this->getFs();
+      if($res === false){
+        return false;
+      } else {
+        if(isset($res[$piIdx]['avail'])){
+          return $res[$piIdx]['avail'];
+        } else {
+          return 0;
+        }
+      }
+    }
+    public function fs_getSize($piIdx){
+      $res = $this->getFs();
+      if($res === false){
+        return false;
+      } else {
+        if(isset($res[$piIdx]['size'])){
+          return $res[$piIdx]['size'];
+        } else {
+          return 0;
+        }
+      }
+    }
   }
