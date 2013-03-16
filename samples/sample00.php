@@ -47,3 +47,9 @@
     echo ' >> Size : '.$oGlances->fs_getSize($inc).'<br />';
     echo '<br />';
   }
+
+  echo 'getLoad : <br />';
+  echo ' > Min1 : '.$oGlances->load_getMin1().'<br />';
+  echo ' > Min5 : '.$oGlances->load_getMin5().'<br />';
+  echo ' > Min15 : '.$oGlances->load_getMin15().'<br />';
+  echo '<br />';

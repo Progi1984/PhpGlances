@@ -249,4 +249,44 @@
         }
       }
     }
+
+    private function getLoad(){
+      return json_decode($this->_api('getLoad'), true);
+    }
+    public function load_getMin1(){
+      $res = $this->getLoad();
+      if($res === false){
+        return false;
+      } else {
+        if(isset($res['min1'])){
+          return $res['min1'];
+        } else {
+          return 0;
+        }
+      }
+    }
+    public function load_getMin5(){
+      $res = $this->getLoad();
+      if($res === false){
+        return false;
+      } else {
+        if(isset($res['min5'])){
+          return $res['min5'];
+        } else {
+          return 0;
+        }
+      }
+    }
+    public function load_getMin15(){
+      $res = $this->getLoad();
+      if($res === false){
+        return false;
+      } else {
+        if(isset($res['min15'])){
+          return $res['min15'];
+        } else {
+          return 0;
+        }
+      }
+    }
   }
