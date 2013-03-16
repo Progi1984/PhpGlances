@@ -70,3 +70,13 @@
   echo ' > Total : '.$oGlances->memswap_getTotal().'<br />';
   echo ' > Used : '.$oGlances->memswap_getUsed().'<br />';
   echo '<br />';
+
+  echo 'getNetwork : <br />';
+  $numNet = $oGlances->network_getCount();
+  echo ' > count : '.$numNet.'<br />';
+  for($inc = 0 ; $inc < $numNet ; $inc++){
+    echo ' >> Interface Name : '.utf8_decode($oGlances->network_getInterfaceName($inc)).'<br />';
+    echo ' >> RX : '.$oGlances->network_getRX($inc).'<br />';
+    echo ' >> TX : '.$oGlances->network_getTX($inc).'<br />';
+    echo '<br />';
+  }

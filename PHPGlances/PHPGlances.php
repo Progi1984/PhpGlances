@@ -430,4 +430,52 @@
       }
     }
 
+    private function getNetwork(){
+      return json_decode($this->_api('getNetwork'), true);
+    }
+    public function network_getCount(){
+      $res = $this->getNetwork();
+      if($res === false){
+        return false;
+      } else {
+        return count($res);
+      }
+    }
+    public function network_getInterfaceName($piIdx){
+      $res = $this->getNetwork();
+      if($res === false){
+        return false;
+      } else {
+        if(isset($res[$piIdx]['interface_name'])){
+          return $res[$piIdx]['interface_name'];
+        } else {
+          return '';
+        }
+      }
+    }
+    public function network_getRX($piIdx){
+      $res = $this->getNetwork();
+      if($res === false){
+        return false;
+      } else {
+        if(isset($res[$piIdx]['rx'])){
+          return $res[$piIdx]['rx'];
+        } else {
+          return '';
+        }
+      }
+    }
+    public function network_getTX($piIdx){
+      $res = $this->getNetwork();
+      if($res === false){
+        return false;
+      } else {
+        if(isset($res[$piIdx]['tx'])){
+          return $res[$piIdx]['tx'];
+        } else {
+          return '';
+        }
+      }
+    }
+
   }
