@@ -1,6 +1,8 @@
 <?php
 
   class PHPGlances{
+    const VERSION = '0.1';
+
     private $_url;
     private $_port;
     private $_oCurl;
