@@ -6,12 +6,18 @@
     private $_url;
     private $_port;
     private $_oCurl;
+    private $_extPHPCurl;
+    private $_extPHPJson;
+    private $_extPHPXMLRPC;
 
     public function __construct($psURL, $piPort){
       $this->_url = $psURL;
       $this->_port = $piPort;
 
       $this->_oCurl = curl_init();
+      $this->_extPHPCurl = extension_loaded('curl');
+      $this->_extPHPJson = extension_loaded('json');
+      $this->_extPHPXMLRPC = extension_loaded('xmlrpc');
     }
     public function __destruct(){
       if($this->_oCurl){
@@ -34,6 +40,24 @@
         return false;
       } else {
         return xmlrpc_decode($res);
+      }
+    }
+
+    public function pingServer(){
+      curl_setopt($this->_oCurl, CURLOPT_URL, $this->_url.'/RPC2');
+      curl_setopt($this->_oCurl, CURLOPT_PORT, $this->_port);
+      curl_setopt($this->_oCurl, CURLOPT_RETURNTRANSFER, 1);
+      curl_setopt($this->_oCurl, CURLOPT_VERBOSE,false);
+      curl_setopt($this->_oCurl, CURLOPT_TIMEOUT, 5);
+      curl_setopt($this->_oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
+      curl_setopt($this->_oCurl, CURLOPT_SSLVERSION,3);
+      curl_setopt($this->_oCurl, CURLOPT_SSL_VERIFYHOST, FALSE);
+      curl_exec($this->_oCurl);
+      $iHTTPCode = curl_getinfo($this->_oCurl, CURLINFO_HTTP_CODE);
+      if($iHTTPCode>=200 && $iHTTPCode<300){
+        return true;
+      } else {
+        return false;
       }
     }
 

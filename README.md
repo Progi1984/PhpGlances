@@ -33,3 +33,11 @@ Example usage:
   echo 'Core : '.$oGlances->getCore().'<br />';
   echo '<br />';
 ```
+
+Changelog
+---------
+**Version 0.10**
+  - Initial Release
+
+**Version 0.11** __(current)__
+  - ADDED pingServer() which return a boolean to check if Glances server is available
