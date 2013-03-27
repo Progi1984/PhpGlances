@@ -44,14 +44,15 @@
     }
 
     public function pingServer(){
+      curl_setopt($this->_oCurl, CURLOPT_HEADER, false);
       curl_setopt($this->_oCurl, CURLOPT_URL, $this->_url.'/RPC2');
       curl_setopt($this->_oCurl, CURLOPT_PORT, $this->_port);
+      curl_setopt($this->_oCurl, CURLOPT_POST, true);
+      curl_setopt($this->_oCurl, CURLOPT_HTTPHEADER, array('Content-Type' => 'text/xml'));
       curl_setopt($this->_oCurl, CURLOPT_RETURNTRANSFER, 1);
-      curl_setopt($this->_oCurl, CURLOPT_VERBOSE,false);
       curl_setopt($this->_oCurl, CURLOPT_TIMEOUT, 5);
-      curl_setopt($this->_oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
-      curl_setopt($this->_oCurl, CURLOPT_SSLVERSION,3);
-      curl_setopt($this->_oCurl, CURLOPT_SSL_VERIFYHOST, FALSE);
+      $psContent = xmlrpc_encode_request('init', array());
+      curl_setopt($this->_oCurl, CURLOPT_POSTFIELDS, $psContent);
       curl_exec($this->_oCurl);
       $iHTTPCode = curl_getinfo($this->_oCurl, CURLINFO_HTTP_CODE);
       if($iHTTPCode>=200 && $iHTTPCode<300){
