@@ -4,7 +4,7 @@
     const VERSION = '0.1';
 
     private $_url;
-    private $_port;
+    private $_port = 80;
     private $_oCurl;
     private $_extPHPCurl;
     private $_extPHPJson;
@@ -14,17 +14,25 @@
       $this->_url = $psURL;
       $this->_port = $piPort;
 
-      $this->_oCurl = curl_init();
+
       $this->_extPHPCurl = extension_loaded('curl');
       $this->_extPHPJson = extension_loaded('json');
       $this->_extPHPXMLRPC = extension_loaded('xmlrpc');
+      $this->_oCurl = $this->fn_curl_init();
     }
     public function __destruct(){
       if($this->_oCurl){
-        curl_close($this->_oCurl);
+        $this->fn_curl_close($this->_oCurl);
       }
     }
 
+    /**
+     * Replacement for "xmlrpc_encode_request"
+     * @param $psString
+     * @param array $parrArray
+     * @return string
+     * @author Progi1984
+     */
     private function fn_xmlrpc_encode_request($psString, array $parrArray){
       if($this->_extPHPXMLRPC == true){
         return xmlrpc_encode_request($psString, $parrArray);
@@ -34,6 +42,13 @@
         return $psReturn;
       }
     }
+
+    /**
+     * Replacement for "xmlrpc_decode"
+     * @param $psString
+     * @return array|mixed|string
+     * @author Progi1984
+     */
     private function fn_xmlrpc_decode($psString){
       if($this->_extPHPXMLRPC == true){
         return xmlrpc_decode($psString);
@@ -55,39 +70,104 @@
       }
     }
 
+    /**
+     * Replacement for "curl_init"
+     * @return resource
+     * @author Progi1984
+     */
+    private function fn_curl_init(){
+      if($this->_extPHPCurl == true){
+        return curl_init();
+      }
+    }
+
+    /**
+     * Replacement for "curl_close"
+     * @param $oCurl
+     * @author Progi1984
+     */
+    private function fn_curl_close($oCurl){
+      if($this->_extPHPCurl == true){
+        return curl_close($oCurl);
+      }
+    }
+
     private function _api($psMethod){
-      curl_setopt($this->_oCurl, CURLOPT_HEADER, false);
-      curl_setopt($this->_oCurl, CURLOPT_URL, $this->_url.'/RPC2');
-      curl_setopt($this->_oCurl, CURLOPT_PORT, $this->_port);
-      curl_setopt($this->_oCurl, CURLOPT_POST, true);
-      curl_setopt($this->_oCurl, CURLOPT_HTTPHEADER, array('Content-Type' => 'text/xml'));
-      curl_setopt($this->_oCurl, CURLOPT_RETURNTRANSFER, true);
-      $psContent = $this->fn_xmlrpc_encode_request($psMethod, array());
-      curl_setopt($this->_oCurl, CURLOPT_POSTFIELDS, $psContent);
-      $res = curl_exec($this->_oCurl);
-      if($res === false){
-        trigger_error('PHPGlances > CurlError : '.curl_error($this->_oCurl),E_USER_WARNING);
-        return false;
+      if($this->_extPHPCurl == true){
+        curl_setopt($this->_oCurl, CURLOPT_HEADER, false);
+        curl_setopt($this->_oCurl, CURLOPT_URL, $this->_url.'/RPC2');
+        curl_setopt($this->_oCurl, CURLOPT_PORT, $this->_port);
+        curl_setopt($this->_oCurl, CURLOPT_POST, true);
+        curl_setopt($this->_oCurl, CURLOPT_HTTPHEADER, array('Content-Type' => 'text/xml'));
+        curl_setopt($this->_oCurl, CURLOPT_RETURNTRANSFER, true);
+        $psContent = $this->fn_xmlrpc_encode_request($psMethod, array());
+        curl_setopt($this->_oCurl, CURLOPT_POSTFIELDS, $psContent);
+        $res = curl_exec($this->_oCurl);
+        if($res === false){
+          trigger_error(__CLASS__.' > '.__METHOD__.'(l.'.__LINE__.') : '.curl_error($this->_oCurl), E_USER_WARNING);
+          return false;
+        } else {
+          return $this->fn_xmlrpc_decode($res);
+        }
       } else {
-        return $this->fn_xmlrpc_decode($res);
+        $params = array(
+          'http' => array(
+            'method' => 'POST',
+            'content' => $this->fn_xmlrpc_encode_request($psMethod, array())
+          )
+        );
+        $oCtx = stream_context_create($params);
+        $oStream = @fopen($this->_url.':'.$this->_port.'/RPC2', 'rb', false, $oCtx);
+        if (!$oStream) {
+          if(isset($php_errormsg) && preg_match("/401/", $php_errormsg)) header("HTTP/1.1 401 Authentication failed");
+          else header("HTTP/1.1 403 Forbidden");
+          die();
+        }
+        $res = @stream_get_contents($oStream);
+        fclose($oStream);
+        if ($res === false || empty($res)) {
+          trigger_error(__CLASS__.' > '.__METHOD__.'(l.'.__LINE__.') : Problem reading data from '.$this->_url.'/RPC2', E_USER_WARNING);
+          return false;
+        } else {
+          return $this->fn_xmlrpc_decode($res);
+        }
       }
     }
 
     public function pingServer(){
-      curl_setopt($this->_oCurl, CURLOPT_HEADER, false);
-      curl_setopt($this->_oCurl, CURLOPT_URL, $this->_url.'/RPC2');
-      curl_setopt($this->_oCurl, CURLOPT_PORT, $this->_port);
-      curl_setopt($this->_oCurl, CURLOPT_POST, true);
-      curl_setopt($this->_oCurl, CURLOPT_HTTPHEADER, array('Content-Type' => 'text/xml'));
-      curl_setopt($this->_oCurl, CURLOPT_RETURNTRANSFER, 1);
-      curl_setopt($this->_oCurl, CURLOPT_TIMEOUT, 5);
-      $psContent = $this->fn_xmlrpc_encode_request('init', array());
-      curl_setopt($this->_oCurl, CURLOPT_POSTFIELDS, $psContent);
-      curl_exec($this->_oCurl);
-      $iHTTPCode = curl_getinfo($this->_oCurl, CURLINFO_HTTP_CODE);
-      if($iHTTPCode>=200 && $iHTTPCode<300){
-        return true;
+      if($this->_extPHPCurl == true){
+        curl_setopt($this->_oCurl, CURLOPT_HEADER, false);
+        curl_setopt($this->_oCurl, CURLOPT_URL, $this->_url.'/RPC2');
+        curl_setopt($this->_oCurl, CURLOPT_PORT, $this->_port);
+        curl_setopt($this->_oCurl, CURLOPT_POST, true);
+        curl_setopt($this->_oCurl, CURLOPT_HTTPHEADER, array('Content-Type' => 'text/xml'));
+        curl_setopt($this->_oCurl, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($this->_oCurl, CURLOPT_TIMEOUT, 5);
+        $psContent = $this->fn_xmlrpc_encode_request('init', array());
+        curl_setopt($this->_oCurl, CURLOPT_POSTFIELDS, $psContent);
+        curl_exec($this->_oCurl);
+        $iHTTPCode = curl_getinfo($this->_oCurl, CURLINFO_HTTP_CODE);
+        if($iHTTPCode>=200 && $iHTTPCode<300){
+          return true;
+        } else {
+          return false;
+        }
       } else {
+        $params = array(
+          'http' => array(
+            'method' => 'POST',
+            'content' => $this->fn_xmlrpc_encode_request('init', array())
+          )
+        );
+        $oCtx = stream_context_create($params);
+        $oStream = @fopen($this->_url.':'.$this->_port.'/RPC2', 'rb', false, $oCtx);
+        if ($oStream) {
+          $res = @stream_get_contents($oStream);
+          fclose($oStream);
+          if (!($res === false || empty($res))){
+            return true;
+          }
+        }
         return false;
       }
     }
