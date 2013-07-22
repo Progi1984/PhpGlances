@@ -4,7 +4,6 @@
 
   $oGlances = new PHPGlances('http://127.0.0.1', 61209);
   $bAlive = $oGlances->pingServer();
-  var_dump($bAlive);
   if(!$bAlive){
     echo 'Can\'t connect to the server';
   } else {

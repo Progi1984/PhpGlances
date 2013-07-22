@@ -25,6 +25,25 @@
       }
     }
 
+    private function fn_xmlrpc_encode_request($psString, array $parrArray){
+      if($this->_extPHPXMLRPC == true){
+        return xmlrpc_encode_request($psString, $parrArray);
+      } else {
+        $psReturn = '<?xml version="1.0" encoding="iso-8859-1"?>';
+        $psReturn .= '<methodCall><methodName>'.$psString.'</methodName><params/></methodCall>';
+        return $psReturn;
+      }
+    }
+    private function fn_xmlrpc_decode($psString){
+      if($this->_extPHPXMLRPC == true){
+        return xmlrpc_decode($psString);
+      } else {
+        print_r(htmlentities($psString));
+
+        return '';
+      }
+    }
+
     private function _api($psMethod){
       curl_setopt($this->_oCurl, CURLOPT_HEADER, false);
       curl_setopt($this->_oCurl, CURLOPT_URL, $this->_url.'/RPC2');
@@ -32,14 +51,14 @@
       curl_setopt($this->_oCurl, CURLOPT_POST, true);
       curl_setopt($this->_oCurl, CURLOPT_HTTPHEADER, array('Content-Type' => 'text/xml'));
       curl_setopt($this->_oCurl, CURLOPT_RETURNTRANSFER, true);
-      $psContent = xmlrpc_encode_request($psMethod, array());
+      $psContent = $this->fn_xmlrpc_encode_request($psMethod, array());
       curl_setopt($this->_oCurl, CURLOPT_POSTFIELDS, $psContent);
       $res = curl_exec($this->_oCurl);
       if($res === false){
         trigger_error('PHPGlances > CurlError : '.curl_error($this->_oCurl),E_USER_WARNING);
         return false;
       } else {
-        return xmlrpc_decode($res);
+        return $this->fn_xmlrpc_decode($res);
       }
     }
 
@@ -51,7 +70,7 @@
       curl_setopt($this->_oCurl, CURLOPT_HTTPHEADER, array('Content-Type' => 'text/xml'));
       curl_setopt($this->_oCurl, CURLOPT_RETURNTRANSFER, 1);
       curl_setopt($this->_oCurl, CURLOPT_TIMEOUT, 5);
-      $psContent = xmlrpc_encode_request('init', array());
+      $psContent = $this->fn_xmlrpc_encode_request('init', array());
       curl_setopt($this->_oCurl, CURLOPT_POSTFIELDS, $psContent);
       curl_exec($this->_oCurl);
       $iHTTPCode = curl_getinfo($this->_oCurl, CURLINFO_HTTP_CODE);
