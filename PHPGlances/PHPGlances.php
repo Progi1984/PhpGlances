@@ -38,8 +38,19 @@
       if($this->_extPHPXMLRPC == true){
         return xmlrpc_decode($psString);
       } else {
-        print_r(htmlentities($psString));
-
+        $oXML = simplexml_load_string($psString);
+        // Array
+        if(isset($oXML->params->param->value->array)){
+          $arrReturn = array();
+          foreach($oXML->params->param->value->array->data->value as $item){
+            $arrReturn[] = (string)$item->string;
+          }
+          return $arrReturn;
+        }
+        // String
+        elseif(isset($oXML->params->param->value->string)){
+          return (string) $oXML->params->param->value->string;
+        }
         return '';
       }
     }
