@@ -18,11 +18,16 @@
       $this->_extPHPCurl = extension_loaded('curl');
       $this->_extPHPJson = extension_loaded('json');
       $this->_extPHPXMLRPC = extension_loaded('xmlrpc');
-      $this->_oCurl = $this->fn_curl_init();
+      if($this->_extPHPCurl == true){
+        $this->_oCurl = curl_init();
+      }
+
     }
     public function __destruct(){
-      if($this->_oCurl){
-        $this->fn_curl_close($this->_oCurl);
+      if($this->_extPHPCurl == true){
+        if($this->_oCurl){
+          curl_close($this->_oCurl);
+        }
       }
     }
 
@@ -71,24 +76,67 @@
     }
 
     /**
-     * Replacement for "curl_init"
-     * @return resource
+     * Replacement for "json_decode"
+     * @param $psString
+     * @return mixed|null
      * @author Progi1984
+     * @url https://code.google.com/p/simplejson-php/source/browse/trunk/simplejson.php
      */
-    private function fn_curl_init(){
-      if($this->_extPHPCurl == true){
-        return curl_init();
-      }
-    }
+    private function fn_json_decode($psString, $pbAssoc = false){
+      if($this->_extPHPJson == true){
+        return json_decode($psString, true);
+      } else {
+        /** @url https://code.google.com/p/simplejson-php/source/browse/trunk/simplejson.php */
+        // $matchString = '/(".*?(?<!\\\\)"|\'.*?(?<!\\\\)\')/';
+        $matchString = '/".*?(?<!\\\\)"/';
 
-    /**
-     * Replacement for "curl_close"
-     * @param $oCurl
-     * @author Progi1984
-     */
-    private function fn_curl_close($oCurl){
-      if($this->_extPHPCurl == true){
-        return curl_close($oCurl);
+        // safety / validity test
+        $t = preg_replace( $matchString, '', $psString );
+        $t = preg_replace( '/[,:{}\[\]0-9.\-+Eaeflnr-u \n\r\t]/', '', $t );
+        if ($t != '') { return null; }
+
+        // build to/from hashes for all strings in the structure
+        $s2m = array();
+        $m2s = array();
+        preg_match_all( $matchString, $psString, $m );
+        foreach ($m[0] as $s) {
+          $hash       = '"' . md5( $s ) . '"';
+          $s2m[$s]    = $hash;
+          $m2s[$hash] = str_replace( '$', '\$', $s );  // prevent $ magic
+        }
+
+        // hide the strings
+        $psString = strtr( $psString, $s2m );
+
+        // convert JS notation to PHP notation
+        $a = ($pbAssoc) ? '' : '(object) ';
+        $psString = strtr( $psString,
+          array(
+            ':' => '=>',
+            '[' => 'array(',
+            '{' => "{$a}array(",
+            ']' => ')',
+            '}' => ')'
+          )
+        );
+
+        // remove leading zeros to prevent incorrect type casting
+        $psString = preg_replace( '~([\s\(,>])(-?)0~', '$1$2', $psString );
+
+        // return the strings
+        $psString = strtr( $psString, $m2s );
+
+        /* "eval" string and return results.
+           As there is no try statement in PHP4, the trick here
+           is to suppress any parser errors while a function is
+           built and then run the function if it got made. */
+        $f = @create_function( '', "return {$psString};" );
+        $r = ($f) ? $f() : null;
+
+        // free mem (shouldn't really be needed, but it's polite)
+        unset( $s2m ); unset( $m2s ); unset( $f );
+
+        return $r;
       }
     }
 
@@ -181,7 +229,7 @@
     }
 
     private function getCpu(){
-      return json_decode($this->_api('getCpu'), true);
+      return $this->fn_json_decode($this->_api('getCpu'), true);
     }
     public function cpu_getIOWait(){
       $res = $this->getCpu();
@@ -257,7 +305,7 @@
     }
 
     private function getDiskIO(){
-      return json_decode($this->_api('getDiskIO'), true);
+      return $this->fn_json_decode($this->_api('getDiskIO'), true);
     }
     public function diskIO_getCount(){
       $res = $this->getDiskIO();
@@ -305,7 +353,7 @@
     }
 
     private function getFs(){
-      return json_decode($this->_api('getFs'), true);
+      return $this->fn_json_decode($this->_api('getFs'), true);
     }
     public function fs_getCount(){
       $res = $this->getFs();
@@ -389,7 +437,7 @@
     }
 
     private function getLoad(){
-      return json_decode($this->_api('getLoad'), true);
+      return $this->fn_json_decode($this->_api('getLoad'), true);
     }
     public function load_getMin1(){
       $res = $this->getLoad();
@@ -429,7 +477,7 @@
     }
 
     private function getLimits(){
-      return json_decode($this->_api('getAllLimits'), true);
+      return $this->fn_json_decode($this->_api('getAllLimits'), true);
     }
     public function limit_getSTD(){
       $res = $this->getLimits();
@@ -565,7 +613,7 @@
     }
 
     private function getMem(){
-      return json_decode($this->_api('getMem'), true);
+      return $this->fn_json_decode($this->_api('getMem'), true);
     }
     public function mem_getInactive(){
       $res = $this->getMem();
@@ -665,7 +713,7 @@
     }
 
     private function getMemSwap(){
-      return json_decode($this->_api('getMemSwap'), true);
+      return $this->fn_json_decode($this->_api('getMemSwap'), true);
     }
     public function memswap_getTotal(){
       $res = $this->getMemSwap();
@@ -705,7 +753,7 @@
     }
 
     private function getNetwork(){
-      return json_decode($this->_api('getNetwork'), true);
+      return $this->fn_json_decode($this->_api('getNetwork'), true);
     }
     public function network_getCount(){
       $res = $this->getNetwork();
@@ -757,7 +805,7 @@
     }
 
     private function getProcessCount(){
-      return json_decode($this->_api('getProcessCount'), true);
+      return $this->fn_json_decode($this->_api('getProcessCount'), true);
     }
     public function processcount_getZombie(){
       $res = $this->getProcessCount();
@@ -809,7 +857,7 @@
     }
 
     private function getProcessList(){
-      return json_decode($this->_api('getProcessList'), true);
+      return $this->fn_json_decode($this->_api('getProcessList'), true);
     }
     public function processlist_getCount(){
       $res = $this->getProcessList();
@@ -953,7 +1001,7 @@
     }
 
     private function getSensors(){
-      return json_decode($this->_api('getSensors'), true);
+      return $this->fn_json_decode($this->_api('getSensors'), true);
     }
     public function sensors_getCount(){
       $res = $this->getSensors();
@@ -989,7 +1037,7 @@
     }
 
     private function getSystem(){
-      return json_decode($this->_api('getSystem'), true);
+      return $this->fn_json_decode($this->_api('getSystem'), true);
     }
     public function system_getLinuxDistro(){
       $res = $this->getSystem();
