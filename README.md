@@ -47,4 +47,4 @@ Changelog
 
 **Version 0.11** __(current)__
   - ADDED pingServer() which return a boolean to check if Glances server is available
-  - ADDED Replacement for functions used in Curl / JSON / SimpleXML / XmlRPC (Issue #3)
+  - ADDED Replacement for functions used in Curl / JSON / SimpleXML / XmlRPC (Issue [#3](https://github.com/Progi1984/PHPGlances/issues/3))
