@@ -9,6 +9,7 @@
     private $_extPHPCurl;
     private $_extPHPJson;
     private $_extPHPXMLRPC;
+    private $_extPHPSimpleXML;
 
     public function __construct($psURL, $piPort){
       $this->_url = $psURL;
@@ -18,6 +19,7 @@
       $this->_extPHPCurl = extension_loaded('curl');
       $this->_extPHPJson = extension_loaded('json');
       $this->_extPHPXMLRPC = extension_loaded('xmlrpc');
+      $this->_extPHPSimpleXML = extension_loaded('simplexml');
       if($this->_extPHPCurl == true){
         $this->_oCurl = curl_init();
       }
@@ -58,21 +60,100 @@
       if($this->_extPHPXMLRPC == true){
         return xmlrpc_decode($psString);
       } else {
-        $oXML = simplexml_load_string($psString);
-        // Array
-        if(isset($oXML->params->param->value->array)){
-          $arrReturn = array();
-          foreach($oXML->params->param->value->array->data->value as $item){
-            $arrReturn[] = (string)$item->string;
+        if($this->_extPHPSimpleXML == true){
+          $oXML = simplexml_load_string($psString);
+          // Array
+          if(isset($oXML->params->param->value->array)){
+            $arrReturn = array();
+            foreach($oXML->params->param->value->array->data->value as $item){
+              $arrReturn[] = (string)$item->string;
+            }
+            return $arrReturn;
           }
-          return $arrReturn;
+          // String
+          elseif(isset($oXML->params->param->value->string)){
+            return (string) $oXML->params->param->value->string;
+          }
+          return '';
+        } else {
+          $oXML = new DOMDocument();
+          $oXML->loadXML($psString);
+          $arrXML = $this->fn_xml_convert($oXML->documentElement);
+          if(isset($arrXML['params']['param']['value']['array'])){
+            $arrReturn = array();
+            foreach($arrXML['params']['param']['value']['array']['data']['value'] as $item){
+              $arrReturn[] = (string)$item['string'];
+            }
+            return $arrReturn;
+          } elseif(isset($arrXML['params']['param']['value']['string'])){
+            return (string) $arrXML['params']['param']['value']['string'];
+          }
         }
-        // String
-        elseif(isset($oXML->params->param->value->string)){
-          return (string) $oXML->params->param->value->string;
-        }
-        return '';
       }
+    }
+
+    /**
+     * Support for PHP4 for XML
+     * @param $node
+     * @return array|string
+     * @author FLE
+     * @url http://www.lalit.org/wordpress/wp-content/uploads/2011/07/XML2Array.txt?ver=0.2
+     */
+    private function fn_xml_convert($node){
+      $output = array();
+      switch ($node->nodeType) {
+        case XML_CDATA_SECTION_NODE:
+          $output['@cdata'] = trim($node->textContent);
+          break;
+        case XML_TEXT_NODE:
+          $output = trim($node->textContent);
+          break;
+        case XML_ELEMENT_NODE:
+          // for each child node, call the covert function recursively
+          for ($i=0, $m=$node->childNodes->length; $i<$m; $i++) {
+            $child = $node->childNodes->item($i);
+            $v = $this->fn_xml_convert($child);
+            if(isset($child->tagName)) {
+              $t = $child->tagName;
+              // assume more nodes of same kind are coming
+              if(!isset($output[$t])) {
+                $output[$t] = array();
+              }
+              $output[$t][] = $v;
+            } else {
+              //check if it is not an empty text node
+              if($v !== '') {
+                $output = $v;
+              }
+            }
+          }
+          if(is_array($output)) {
+            // if only one node of its kind, assign it directly instead if array($value);
+            foreach ($output as $t => $v) {
+              if(is_array($v) && count($v)==1) {
+                $output[$t] = $v[0];
+              }
+            }
+            if(empty($output)) {
+              //for empty nodes
+              $output = '';
+            }
+          }
+          // loop through the attributes and collect them
+          if($node->attributes->length) {
+            $a = array();
+            foreach($node->attributes as $attrName => $attrNode) {
+              $a[$attrName] = (string) $attrNode->value;
+            }
+            // if its an leaf node, store the value in @value instead of directly storing it.
+            if(!is_array($output)) {
+              $output = array('@value' => $output);
+            }
+            $output['@attributes'] = $a;
+          }
+          break;
+      }
+      return $output;
     }
 
     /**

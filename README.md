@@ -13,25 +13,31 @@ Read the specification of the Glances API:
 - https://github.com/nicolargo/glances/wiki/The-Glances-API-How-To
 
 Dependencies:
-- [PHP-Curl](http://php.net/manual/fr/book.curl.php)
-- [PHP-XML-RPC](http://php.net/manual/fr/book.xmlrpc.php)
+Per default, any extensions are useful.
+But if extensions [PHP-Curl](http://php.net/manual/fr/book.curl.php), [PHP-JSON](http://php.net/manual/fr/book.json.php), [PHP-SimpleXML](http://php.net/manual/fr/book.simplexml.php) and [PHP-XML-RPC](http://php.net/manual/fr/book.xmlrpc.php) are load, then PHPGlances will be more optimal.
+
 
 Example usage:
 ```php
   include_once '../PHPGlances/PHPGlances.php';
 
   $oGlances = new PHPGlances('http://127.0.0.1', 61209);
-  $res = $oGlances->listMethods();
-  echo 'listMethods : ';
-  echo '<ul>';
-  foreach($res as $item){
-    echo '<li>'.$item.'</li>';
-  }
-  echo '</ul>';
+  $bAlive = $oGlances->pingServer();
+  if(!$bAlive){
+    echo 'Can\'t connect to the server';
+  } else {
+    $res = $oGlances->listMethods();
+    echo 'listMethods : ';
+    echo '<ul>';
+    foreach($res as $item){
+      echo '<li>'.$item.'</li>';
+    }
+    echo '</ul>';
 
-  echo 'getCore : <br />';
-  echo 'Core : '.$oGlances->getCore().'<br />';
-  echo '<br />';
+    echo 'getCore : <br />';
+    echo 'Core : '.$oGlances->getCore().'<br />';
+    echo '<br />';
+  }
 ```
 
 Changelog
@@ -41,3 +47,4 @@ Changelog
 
 **Version 0.11** __(current)__
   - ADDED pingServer() which return a boolean to check if Glances server is available
+  - ADDED Replacement for functions used in Curl / JSON / SimpleXML / XmlRPC (Issue #3)
