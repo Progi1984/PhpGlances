@@ -5,6 +5,8 @@
 
     private $_url;
     private $_port = 80;
+    private $_error = '';
+
     private $_oCurl;
     private $_extPHPCurl;
     private $_extPHPJson;
@@ -74,19 +76,48 @@
           elseif(isset($oXML->params->param->value->string)){
             return (string) $oXML->params->param->value->string;
           }
+          // Error
+          elseif(isset($oXML->fault->value->struct->member->name)){
+            $arrReturn = array();
+            foreach($oXML->fault->value->struct->member as $item){
+              if(isset($item->name) && $item->name == 'faultCode'){
+                $arrReturn['faultCode'] = (int)$item->value->int;
+              }
+              if(isset($item->name) && $item->name == 'faultString'){
+                $arrReturn['faultString'] = (string)$item->value->string;
+              }
+            }
+            return $arrReturn;
+          }
           return '';
         } else {
           $oXML = new DOMDocument();
           $oXML->loadXML($psString);
           $arrXML = $this->fn_xml_convert($oXML->documentElement);
+          // Array
           if(isset($arrXML['params']['param']['value']['array'])){
             $arrReturn = array();
             foreach($arrXML['params']['param']['value']['array']['data']['value'] as $item){
               $arrReturn[] = (string)$item['string'];
             }
             return $arrReturn;
-          } elseif(isset($arrXML['params']['param']['value']['string'])){
+          }
+          // String
+          elseif(isset($arrXML['params']['param']['value']['string'])){
             return (string) $arrXML['params']['param']['value']['string'];
+          }
+          // Error
+          elseif(isset($arrXML['fault']['value']['struct']['member']['name'])){
+            $arrReturn = array();
+            foreach($arrXML['fault']['value']['struct']['member'] as $item){
+              if(isset($item['name']) && $item['name'] == 'faultCode'){
+                $arrReturn['faultCode'] = (int)$item['name']['int'];
+              }
+              if(isset($item['name']) && $item['name'] == 'faultString'){
+                $arrReturn['faultString'] = (string)$item['name']['string'];
+              }
+            }
+            return $arrReturn;
           }
         }
       }
@@ -255,10 +286,16 @@
         $res = @stream_get_contents($oStream);
         fclose($oStream);
         if ($res === false || empty($res)) {
-          trigger_error(__CLASS__.' > '.__METHOD__.'(l.'.__LINE__.') : Problem reading data from '.$this->_url.'/RPC2', E_USER_WARNING);
+          $this->_error = __CLASS__.' > '.__METHOD__.'(l.'.__LINE__.') : Problem reading data from '.$this->_url.'/RPC2';
           return false;
         } else {
-          return $this->fn_xmlrpc_decode($res);
+          $res = $this->fn_xmlrpc_decode($res);
+          if(isset($res['faultCode']) && $res['faultCode'] == 1){
+            $this->_error = $res['faultString'];
+            return false;
+          }
+          $this->_error = '';
+          return $res;
         }
       }
     }
@@ -301,6 +338,19 @@
       }
     }
 
+    /**
+     * Return the intercepted error
+     * @return string
+     * @author Progi1984
+     */
+    public function getError(){
+      return $this->_error;
+    }
+
+    /**
+     * @return array
+     * @author Progi1984
+     */
     public function listMethods(){
       return $this->_api('system.listMethods');
     }
