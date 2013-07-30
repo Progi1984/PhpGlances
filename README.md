@@ -45,8 +45,10 @@ Changelog
 **Version 0.1**
   - Initial Release
 
-**Version 0.2** __(current)__
+**Version 0.2**
   - ADDED pingServer() which return a boolean to check if Glances server is available
   - ADDED Replacement for functions used in Curl / JSON / SimpleXML / XmlRPC (Issue [#3](https://github.com/Progi1984/PHPGlances/issues/3))
   - ADDED getError() which return a string with the intercepted error when a function (like listMethods()) return false
   - ADDED setCacheStatus() which permits to disable and enable the cache & getCacheStatus() which permits to get the status (true or false) of the cache
+
+**Version 0.3** __current__

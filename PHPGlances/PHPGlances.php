@@ -1,7 +1,7 @@
 <?php
 
   class PHPGlances{
-    const VERSION = '0.1';
+    const VERSION = '0.2';
 
     private $_url;
     private $_port = 80;
