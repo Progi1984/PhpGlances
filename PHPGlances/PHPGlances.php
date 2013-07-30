@@ -6,6 +6,8 @@
     private $_url;
     private $_port = 80;
     private $_error = '';
+    private $_useCache = false;
+    private $_arrCache = array();
 
     private $_oCurl;
     private $_extPHPCurl;
@@ -14,13 +16,12 @@
     private $_extPHPSimpleXML;
 
     public function __construct($psURL, $piPort){
-      $this->_url = $psURL;
-      $this->_port = $piPort;
+      $this->_url             = $psURL;
+      $this->_port            = $piPort;
 
-
-      $this->_extPHPCurl = extension_loaded('curl');
-      $this->_extPHPJson = extension_loaded('json');
-      $this->_extPHPXMLRPC = extension_loaded('xmlrpc');
+      $this->_extPHPCurl      = extension_loaded('curl');
+      $this->_extPHPJson      = extension_loaded('json');
+      $this->_extPHPXMLRPC    = extension_loaded('xmlrpc');
       $this->_extPHPSimpleXML = extension_loaded('simplexml');
       if($this->_extPHPCurl == true){
         $this->_oCurl = curl_init();
@@ -348,6 +349,26 @@
     }
 
     /**
+     * Enable or disable the cache
+     * @param boolean $bUseCache
+     * @return $this
+     * @author Progi1984
+     */
+    public function setCacheStatus($bUseCache){
+      $this->_useCache = $bUseCache;
+      return $this;
+    }
+
+    /**
+     * Get the cache status
+     * @return bool
+     * @author Progi1984
+     */
+    public function getCacheStatus(){
+      return $this->_useCache;
+    }
+
+    /**
      * @return array
      * @author Progi1984
      */
@@ -360,7 +381,14 @@
     }
 
     private function getCpu(){
-      return $this->fn_json_decode($this->_api('getCpu'), true);
+      if($this->_useCache){
+        if(!isset($this->_arrCache['getCpu'])){
+          $this->_arrCache['getCpu'] = $this->fn_json_decode($this->_api('getCpu'), true);
+        }
+        return $this->_arrCache['getCpu'];
+      } else {
+        return $this->fn_json_decode($this->_api('getCpu'), true);
+      }
     }
     public function cpu_getIOWait(){
       $res = $this->getCpu();
@@ -436,7 +464,14 @@
     }
 
     private function getDiskIO(){
-      return $this->fn_json_decode($this->_api('getDiskIO'), true);
+      if($this->_useCache){
+        if(!isset($this->_arrCache['getDiskIO'])){
+          $this->_arrCache['getDiskIO'] = $this->fn_json_decode($this->_api('getDiskIO'), true);
+        }
+        return $this->_arrCache['getDiskIO'];
+      } else {
+        return $this->fn_json_decode($this->_api('getDiskIO'), true);
+      }
     }
     public function diskIO_getCount(){
       $res = $this->getDiskIO();
@@ -484,7 +519,14 @@
     }
 
     private function getFs(){
-      return $this->fn_json_decode($this->_api('getFs'), true);
+      if($this->_useCache){
+        if(!isset($this->_arrCache['getFs'])){
+          $this->_arrCache['getFs'] = $this->fn_json_decode($this->_api('getFs'), true);
+        }
+        return $this->_arrCache['getFs'];
+      } else {
+        return $this->fn_json_decode($this->_api('getFs'), true);
+      }
     }
     public function fs_getCount(){
       $res = $this->getFs();
@@ -568,7 +610,14 @@
     }
 
     private function getLoad(){
-      return $this->fn_json_decode($this->_api('getLoad'), true);
+      if($this->_useCache){
+        if(!isset($this->_arrCache['getLoad'])){
+          $this->_arrCache['getLoad'] = $this->fn_json_decode($this->_api('getLoad'), true);
+        }
+        return $this->_arrCache['getLoad'];
+      } else {
+        return $this->fn_json_decode($this->_api('getLoad'), true);
+      }
     }
     public function load_getMin1(){
       $res = $this->getLoad();
@@ -608,7 +657,14 @@
     }
 
     private function getLimits(){
-      return $this->fn_json_decode($this->_api('getAllLimits'), true);
+      if($this->_useCache){
+        if(!isset($this->_arrCache['getAllLimits'])){
+          $this->_arrCache['getAllLimits'] = $this->fn_json_decode($this->_api('getAllLimits'), true);
+        }
+        return $this->_arrCache['getAllLimits'];
+      } else {
+        return $this->fn_json_decode($this->_api('getAllLimits'), true);
+      }
     }
     public function limit_getSTD(){
       $res = $this->getLimits();
@@ -744,7 +800,14 @@
     }
 
     private function getMem(){
-      return $this->fn_json_decode($this->_api('getMem'), true);
+      if($this->_useCache){
+        if(!isset($this->_arrCache['getMem'])){
+          $this->_arrCache['getMem'] = $this->fn_json_decode($this->_api('getMem'), true);
+        }
+        return $this->_arrCache['getMem'];
+      } else {
+        return $this->fn_json_decode($this->_api('getMem'), true);
+      }
     }
     public function mem_getInactive(){
       $res = $this->getMem();
@@ -844,7 +907,14 @@
     }
 
     private function getMemSwap(){
-      return $this->fn_json_decode($this->_api('getMemSwap'), true);
+      if($this->_useCache){
+        if(!isset($this->_arrCache['getMemSwap'])){
+          $this->_arrCache['getMemSwap'] = $this->fn_json_decode($this->_api('getMemSwap'), true);
+        }
+        return $this->_arrCache['getMemSwap'];
+      } else {
+        return $this->fn_json_decode($this->_api('getMemSwap'), true);
+      }
     }
     public function memswap_getTotal(){
       $res = $this->getMemSwap();
@@ -884,7 +954,14 @@
     }
 
     private function getNetwork(){
-      return $this->fn_json_decode($this->_api('getNetwork'), true);
+      if($this->_useCache){
+        if(!isset($this->_arrCache['getNetwork'])){
+          $this->_arrCache['getNetwork'] = $this->fn_json_decode($this->_api('getNetwork'), true);
+        }
+        return $this->_arrCache['getNetwork'];
+      } else {
+        return $this->fn_json_decode($this->_api('getNetwork'), true);
+      }
     }
     public function network_getCount(){
       $res = $this->getNetwork();
@@ -936,7 +1013,14 @@
     }
 
     private function getProcessCount(){
-      return $this->fn_json_decode($this->_api('getProcessCount'), true);
+      if($this->_useCache){
+        if(!isset($this->_arrCache['getProcessCount'])){
+          $this->_arrCache['getProcessCount'] = $this->fn_json_decode($this->_api('getProcessCount'), true);
+        }
+        return $this->_arrCache['getProcessCount'];
+      } else {
+        return $this->fn_json_decode($this->_api('getProcessCount'), true);
+      }
     }
     public function processcount_getZombie(){
       $res = $this->getProcessCount();
@@ -988,7 +1072,14 @@
     }
 
     private function getProcessList(){
-      return $this->fn_json_decode($this->_api('getProcessList'), true);
+      if($this->_useCache){
+        if(!isset($this->_arrCache['getProcessList'])){
+          $this->_arrCache['getProcessList'] = $this->fn_json_decode($this->_api('getProcessList'), true);
+        }
+        return $this->_arrCache['getProcessList'];
+      } else {
+        return $this->fn_json_decode($this->_api('getProcessList'), true);
+      }
     }
     public function processlist_getCount(){
       $res = $this->getProcessList();
@@ -1132,7 +1223,14 @@
     }
 
     private function getSensors(){
-      return $this->fn_json_decode($this->_api('getSensors'), true);
+      if($this->_useCache){
+        if(!isset($this->_arrCache['getSensors'])){
+          $this->_arrCache['getSensors'] = $this->fn_json_decode($this->_api('getSensors'), true);
+        }
+        return $this->_arrCache['getSensors'];
+      } else {
+        return $this->fn_json_decode($this->_api('getSensors'), true);
+      }
     }
     public function sensors_getCount(){
       $res = $this->getSensors();
@@ -1168,7 +1266,14 @@
     }
 
     private function getSystem(){
-      return $this->fn_json_decode($this->_api('getSystem'), true);
+      if($this->_useCache){
+        if(!isset($this->_arrCache['getSystem'])){
+          $this->_arrCache['getSystem'] = $this->fn_json_decode($this->_api('getSystem'), true);
+        }
+        return $this->_arrCache['getSystem'];
+      } else {
+        return $this->fn_json_decode($this->_api('getSystem'), true);
+      }
     }
     public function system_getLinuxDistro(){
       $res = $this->getSystem();

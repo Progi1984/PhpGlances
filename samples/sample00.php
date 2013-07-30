@@ -2,11 +2,15 @@
 
   include_once '../PHPGlances/PHPGlances.php';
 
+  define('USE_CACHE', true);
+
   $oGlances = new PHPGlances('http://127.0.0.1', 61209);
   $bAlive = $oGlances->pingServer();
   if(!$bAlive){
     echo 'Can\'t connect to the server';
   } else {
+    $oGlances->setCacheStatus(USE_CACHE);
+
     $res = $oGlances->listMethods();
     echo 'listMethods : ';
     echo '<ul>';
