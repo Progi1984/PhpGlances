@@ -25,14 +25,14 @@ before_script:
 
 script:
   ## PHP_CodeSniffer
-  - phpcs --standard=PSR1 src/
-  - phpcs --standard=PSR2 src/
+  - phpcs --standard=PSR1 PHPGlances/
+  - phpcs --standard=PSR2 PHPGlances/
   ## PHP Copy/Paste Detector
-  - php phpcpd.phar --verbose src/
+  - php phpcpd.phar --verbose PHPGlances/
   ## PHP Mess Detector
-  - phpmd src/ text codesize,unusedcode,naming,design
+  - phpmd PHPGlances/ text codesize,unusedcode,naming,design
   ## PHPLOC
-  - php phploc.phar src/
+  - php phploc.phar PHPGlances/
 
 notifications:
   email:
