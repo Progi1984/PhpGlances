@@ -1,0 +1,24 @@
+{
+    "name": "progi1984/phpglances",
+    "description": "A PHP library for the Glances XML/RPC API",
+    "keywords": ["PHP","glances","monitoring"],
+    "version": "0.2",
+    "type": "library",
+    "license": "Apache-2.0",
+    "authors": [
+        {
+            "name": "Franck LEFEVRE",
+            "email": "progi1984@gmail.com",
+            "homepage": "http://rootslabs.net/blog/",
+            "role": "Lead Developer"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.0"
+    },
+    "autoload": {
+        "psr-0": {
+            "Progi1984": "src/"
+        }
+    }
+}
