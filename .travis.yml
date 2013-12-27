@@ -26,7 +26,7 @@ before_script:
   ## Atoum
   - curl -o mageekguy.atoum.phar http://downloads.atoum.org/nightly/mageekguy.atoum.phar
   ## Glances
-  - pip install --user Glances
+  - sudo pip install Glances
 
 script:
   ## PHP_CodeSniffer
