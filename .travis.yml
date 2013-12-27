@@ -1,7 +1,7 @@
 #Type : PHP
 language: php
 php:
-  - 5.3
+  - 5.3.3
   - 5.4
   - 5.5
 
@@ -23,6 +23,10 @@ before_script:
   - phpenv rehash
   ## PHPLOC
   - curl -o phploc.phar https://phar.phpunit.de/phploc.phar
+  ## Atoum
+  - curl -o mageekguy.atoum.phar http://downloads.atoum.org/nightly/mageekguy.atoum.phar
+  ## Glances
+  - pip install Glances
 
 script:
   ## PHP_CodeSniffer
@@ -31,7 +35,7 @@ script:
   ## PHP Copy/Paste Detector
   - php phpcpd.phar --verbose src/
   ## PHP Mess Detector
-  - phpmd src/ text codesize,unusedcode,naming,design
+  - phpmd src/ text unusedcode,naming,design
   ## PHPLOC
   - php phploc.phar src/
 
