@@ -1,352 +1,351 @@
 <?php
+    namespace Progi1984;
 
-  class PHPGlances{
-    const VERSION = '0.2';
+    class PHPGlances{
+        const VERSION = '0.2';
 
-    private $_url;
-    private $_port = 80;
-    private $_error = '';
-    private $_useCache = false;
-    private $_arrCache = array();
+        private $_url;
+        private $_port = 80;
+        private $_error = '';
+        private $_useCache = false;
+        private $_arrCache = array();
 
-    private $_oCurl;
-    private $_extPHPCurl;
-    private $_extPHPJson;
-    private $_extPHPXMLRPC;
-    private $_extPHPSimpleXML;
+        private $_oCurl;
+        private $_extPHPCurl;
+        private $_extPHPJson;
+        private $_extPHPXMLRPC;
+        private $_extPHPSimpleXML;
 
-    public function __construct($psURL, $piPort){
-      $this->_url             = $psURL;
-      $this->_port            = $piPort;
+        public function __construct($psURL, $piPort){
+            $this->_url             = $psURL;
+            $this->_port            = $piPort;
 
-      $this->_extPHPCurl      = extension_loaded('curl');
-      $this->_extPHPJson      = extension_loaded('json');
-      $this->_extPHPXMLRPC    = extension_loaded('xmlrpc');
-      $this->_extPHPSimpleXML = extension_loaded('simplexml');
-      if($this->_extPHPCurl == true){
-        $this->_oCurl = curl_init();
-      }
-
-    }
-    public function __destruct(){
-      if($this->_extPHPCurl == true){
-        if($this->_oCurl){
-          curl_close($this->_oCurl);
+            $this->_extPHPCurl      = extension_loaded('curl');
+            $this->_extPHPJson      = extension_loaded('json');
+            $this->_extPHPXMLRPC    = extension_loaded('xmlrpc');
+            $this->_extPHPSimpleXML = extension_loaded('simplexml');
+            if($this->_extPHPCurl == true){
+                $this->_oCurl = curl_init();
+            }
         }
-      }
-    }
-
-    /**
-     * Replacement for "xmlrpc_encode_request"
-     * @param $psString
-     * @param array $parrArray
-     * @return string
-     * @author Progi1984
-     */
-    private function fn_xmlrpc_encode_request($psString, array $parrArray){
-      if($this->_extPHPXMLRPC == true){
-        return xmlrpc_encode_request($psString, $parrArray);
-      } else {
-        $psReturn = '<?xml version="1.0" encoding="iso-8859-1"?>';
-        $psReturn .= '<methodCall><methodName>'.$psString.'</methodName><params/></methodCall>';
-        return $psReturn;
-      }
-    }
-
-    /**
-     * Replacement for "xmlrpc_decode"
-     * @param $psString
-     * @return array|mixed|string
-     * @author Progi1984
-     */
-    private function fn_xmlrpc_decode($psString){
-      if($this->_extPHPXMLRPC == true){
-        return xmlrpc_decode($psString);
-      } else {
-        if($this->_extPHPSimpleXML == true){
-          $oXML = simplexml_load_string($psString);
-          // Array
-          if(isset($oXML->params->param->value->array)){
-            $arrReturn = array();
-            foreach($oXML->params->param->value->array->data->value as $item){
-              $arrReturn[] = (string)$item->string;
+        
+        public function __destruct(){
+            if($this->_extPHPCurl == true){
+                if($this->_oCurl){
+                    curl_close($this->_oCurl);
+                }
             }
-            return $arrReturn;
-          }
-          // String
-          elseif(isset($oXML->params->param->value->string)){
-            return (string) $oXML->params->param->value->string;
-          }
-          // Error
-          elseif(isset($oXML->fault->value->struct->member->name)){
-            $arrReturn = array();
-            foreach($oXML->fault->value->struct->member as $item){
-              if(isset($item->name) && $item->name == 'faultCode'){
-                $arrReturn['faultCode'] = (int)$item->value->int;
-              }
-              if(isset($item->name) && $item->name == 'faultString'){
-                $arrReturn['faultString'] = (string)$item->value->string;
-              }
-            }
-            return $arrReturn;
-          }
-          return '';
-        } else {
-          $oXML = new DOMDocument();
-          $oXML->loadXML($psString);
-          $arrXML = $this->fn_xml_convert($oXML->documentElement);
-          // Array
-          if(isset($arrXML['params']['param']['value']['array'])){
-            $arrReturn = array();
-            foreach($arrXML['params']['param']['value']['array']['data']['value'] as $item){
-              $arrReturn[] = (string)$item['string'];
-            }
-            return $arrReturn;
-          }
-          // String
-          elseif(isset($arrXML['params']['param']['value']['string'])){
-            return (string) $arrXML['params']['param']['value']['string'];
-          }
-          // Error
-          elseif(isset($arrXML['fault']['value']['struct']['member']['name'])){
-            $arrReturn = array();
-            foreach($arrXML['fault']['value']['struct']['member'] as $item){
-              if(isset($item['name']) && $item['name'] == 'faultCode'){
-                $arrReturn['faultCode'] = (int)$item['name']['int'];
-              }
-              if(isset($item['name']) && $item['name'] == 'faultString'){
-                $arrReturn['faultString'] = (string)$item['name']['string'];
-              }
-            }
-            return $arrReturn;
-          }
         }
-      }
-    }
 
-    /**
-     * Support for PHP4 for XML
-     * @param $node
-     * @return array|string
-     * @author FLE
-     * @url http://www.lalit.org/wordpress/wp-content/uploads/2011/07/XML2Array.txt?ver=0.2
-     */
-    private function fn_xml_convert($node){
-      $output = array();
-      switch ($node->nodeType) {
-        case XML_CDATA_SECTION_NODE:
-          $output['@cdata'] = trim($node->textContent);
-          break;
-        case XML_TEXT_NODE:
-          $output = trim($node->textContent);
-          break;
-        case XML_ELEMENT_NODE:
-          // for each child node, call the covert function recursively
-          for ($i=0, $m=$node->childNodes->length; $i<$m; $i++) {
-            $child = $node->childNodes->item($i);
-            $v = $this->fn_xml_convert($child);
-            if(isset($child->tagName)) {
-              $t = $child->tagName;
-              // assume more nodes of same kind are coming
-              if(!isset($output[$t])) {
-                $output[$t] = array();
-              }
-              $output[$t][] = $v;
+        /**
+         * Replacement for "xmlrpc_encode_request"
+         * @param $psString
+         * @param array $parrArray
+         * @return string
+         * @author Progi1984
+         */
+        private function fn_xmlrpc_encode_request($psString, array $parrArray){
+            if($this->_extPHPXMLRPC == true){
+                return xmlrpc_encode_request($psString, $parrArray);
             } else {
-              //check if it is not an empty text node
-              if($v !== '') {
-                $output = $v;
-              }
+                $psReturn = '<?xml version="1.0" encoding="iso-8859-1"?>';
+                $psReturn .= '<methodCall><methodName>'.$psString.'</methodName><params/></methodCall>';
+                return $psReturn;
             }
-          }
-          if(is_array($output)) {
-            // if only one node of its kind, assign it directly instead if array($value);
-            foreach ($output as $t => $v) {
-              if(is_array($v) && count($v)==1) {
-                $output[$t] = $v[0];
-              }
+        }
+
+        /**
+         * Replacement for "xmlrpc_decode"
+         * @param $psString
+         * @return array|mixed|string
+         * @author Progi1984
+         */
+        private function fn_xmlrpc_decode($psString){
+            if($this->_extPHPXMLRPC == true){
+                return xmlrpc_decode($psString);
+            } else {
+                if($this->_extPHPSimpleXML == true){
+                    $oXML = simplexml_load_string($psString);
+                    // Array
+                    if(isset($oXML->params->param->value->array)){
+                        $arrReturn = array();
+                        foreach($oXML->params->param->value->array->data->value as $item){
+                            $arrReturn[] = (string)$item->string;
+                        }
+                        return $arrReturn;
+                    }
+                    // String
+                    elseif(isset($oXML->params->param->value->string)){
+                        return (string) $oXML->params->param->value->string;
+                    }
+                    // Error
+                    elseif(isset($oXML->fault->value->struct->member->name)){
+                        $arrReturn = array();
+                        foreach($oXML->fault->value->struct->member as $item){
+                            if(isset($item->name) && $item->name == 'faultCode'){
+                                $arrReturn['faultCode'] = (int)$item->value->int;
+                            }
+                            if(isset($item->name) && $item->name == 'faultString'){
+                                $arrReturn['faultString'] = (string)$item->value->string;
+                            }
+                        }
+                        return $arrReturn;
+                    }
+                    return '';
+                } else {
+                    $oXML = new DOMDocument();
+                    $oXML->loadXML($psString);
+                    $arrXML = $this->fn_xml_convert($oXML->documentElement);
+                    // Array
+                    if(isset($arrXML['params']['param']['value']['array'])){
+                        $arrReturn = array();
+                        foreach($arrXML['params']['param']['value']['array']['data']['value'] as $item){
+                            $arrReturn[] = (string)$item['string'];
+                        }
+                        return $arrReturn;
+                    }
+                    // String
+                    elseif(isset($arrXML['params']['param']['value']['string'])){
+                        return (string) $arrXML['params']['param']['value']['string'];
+                    }
+                    // Error
+                    elseif(isset($arrXML['fault']['value']['struct']['member']['name'])){
+                        $arrReturn = array();
+                        foreach($arrXML['fault']['value']['struct']['member'] as $item){
+                            if(isset($item['name']) && $item['name'] == 'faultCode'){
+                                $arrReturn['faultCode'] = (int)$item['name']['int'];
+                            }
+                            if(isset($item['name']) && $item['name'] == 'faultString'){
+                                $arrReturn['faultString'] = (string)$item['name']['string'];
+                            }
+                        }
+                        return $arrReturn;
+                    }
+                }
             }
-            if(empty($output)) {
-              //for empty nodes
-              $output = '';
+        }
+
+        /**
+         * Support for PHP4 for XML
+         * @param $node
+         * @return array|string
+         * @author Progi1984
+         * @url http://www.lalit.org/wordpress/wp-content/uploads/2011/07/XML2Array.txt?ver=0.2
+         */
+        private function fn_xml_convert($node){
+            $output = array();
+            switch ($node->nodeType) {
+                case XML_CDATA_SECTION_NODE:
+                    $output['@cdata'] = trim($node->textContent);
+                    break;
+                case XML_TEXT_NODE:
+                    $output = trim($node->textContent);
+                    break;
+                case XML_ELEMENT_NODE:
+                    // for each child node, call the covert function recursively
+                    for ($i=0, $m=$node->childNodes->length; $i<$m; $i++) {
+                        $child = $node->childNodes->item($i);
+                        $v = $this->fn_xml_convert($child);
+                        if(isset($child->tagName)) {
+                            $t = $child->tagName;
+                            // assume more nodes of same kind are coming
+                            if(!isset($output[$t])) {
+                                $output[$t] = array();
+                            }
+                            $output[$t][] = $v;
+                        } else {
+                            //check if it is not an empty text node
+                            if($v !== '') {
+                                $output = $v;
+                            }
+                        }
+                    }
+                    if(is_array($output)) {
+                        // if only one node of its kind, assign it directly instead if array($value);
+                        foreach ($output as $t => $v) {
+                            if(is_array($v) && count($v)==1) {
+                                $output[$t] = $v[0];
+                            }
+                        }
+                        if(empty($output)) {
+                            //for empty nodes
+                            $output = '';
+                        }
+                    }
+                    // loop through the attributes and collect them
+                    if($node->attributes->length) {
+                        $a = array();
+                        foreach($node->attributes as $attrName => $attrNode) {
+                            $a[$attrName] = (string) $attrNode->value;
+                        }
+                        // if its an leaf node, store the value in @value instead of directly storing it.
+                        if(!is_array($output)) {
+                            $output = array('@value' => $output);
+                        }
+                        $output['@attributes'] = $a;
+                    }
+                    break;
             }
-          }
-          // loop through the attributes and collect them
-          if($node->attributes->length) {
-            $a = array();
-            foreach($node->attributes as $attrName => $attrNode) {
-              $a[$attrName] = (string) $attrNode->value;
+            return $output;
+        }
+
+        /**
+         * Replacement for "json_decode"
+         * @param $psString
+         * @return mixed|null
+         * @author Progi1984
+         * @url https://code.google.com/p/simplejson-php/source/browse/trunk/simplejson.php
+         */
+        private function fn_json_decode($psString, $pbAssoc = false){
+            if($this->_extPHPJson == true){
+                return json_decode($psString, true);
+            } else {
+                // $matchString = '/(".*?(?<!\\\\)"|\'.*?(?<!\\\\)\')/';
+                $matchString = '/".*?(?<!\\\\)"/';
+
+                // safety / validity test
+                $t = preg_replace( $matchString, '', $psString );
+                $t = preg_replace( '/[,:{}\[\]0-9.\-+Eaeflnr-u \n\r\t]/', '', $t );
+                if ($t != '') { return null; }
+
+                // build to/from hashes for all strings in the structure
+                $s2m = array();
+                $m2s = array();
+                preg_match_all( $matchString, $psString, $m );
+                foreach ($m[0] as $s) {
+                    $hash       = '"' . md5( $s ) . '"';
+                    $s2m[$s]    = $hash;
+                    $m2s[$hash] = str_replace( '$', '\$', $s );  // prevent $ magic
+                }
+
+                // hide the strings
+                $psString = strtr( $psString, $s2m );
+
+                // convert JS notation to PHP notation
+                $a = ($pbAssoc) ? '' : '(object) ';
+                $psString = strtr( $psString, array(
+                    ':' => '=>',
+                    '[' => 'array(',
+                    '{' => "{$a}array(",
+                    ']' => ')',
+                    '}' => ')'
+                    )
+                );
+
+                // remove leading zeros to prevent incorrect type casting
+                $psString = preg_replace( '~([\s\(,>])(-?)0~', '$1$2', $psString );
+
+                // return the strings
+                $psString = strtr( $psString, $m2s );
+
+                /* "eval" string and return results.
+                   As there is no try statement in PHP4, the trick here
+                    is to suppress any parser errors while a function is
+                    built and then run the function if it got made. */
+                $f = @create_function( '', "return {$psString};" );
+                $r = ($f) ? $f() : null;
+
+                // free mem (shouldn't really be needed, but it's polite)
+                unset( $s2m ); unset( $m2s ); unset( $f );
+
+                return $r;
             }
-            // if its an leaf node, store the value in @value instead of directly storing it.
-            if(!is_array($output)) {
-              $output = array('@value' => $output);
+        }
+
+        private function _api($psMethod){
+            if($this->_extPHPCurl == true){
+                curl_setopt($this->_oCurl, CURLOPT_HEADER, false);
+                curl_setopt($this->_oCurl, CURLOPT_URL, $this->_url.'/RPC2');
+                curl_setopt($this->_oCurl, CURLOPT_PORT, $this->_port);
+                curl_setopt($this->_oCurl, CURLOPT_POST, true);
+                curl_setopt($this->_oCurl, CURLOPT_HTTPHEADER, array('Content-Type' => 'text/xml'));
+                curl_setopt($this->_oCurl, CURLOPT_RETURNTRANSFER, true);
+                $psContent = $this->fn_xmlrpc_encode_request($psMethod, array());
+                curl_setopt($this->_oCurl, CURLOPT_POSTFIELDS, $psContent);
+                $res = curl_exec($this->_oCurl);
+                if($res === false){
+                    trigger_error(__CLASS__.' > '.__METHOD__.'(l.'.__LINE__.') : '.curl_error($this->_oCurl), E_USER_WARNING);
+                    return false;
+                } else {
+                    return $this->fn_xmlrpc_decode($res);
+                }
+            } else {
+                $params = array(
+                    'http' => array(
+                        'method' => 'POST',
+                        'content' => $this->fn_xmlrpc_encode_request($psMethod, array())
+                    )
+                );
+                $oCtx = stream_context_create($params);
+                $oStream = @fopen($this->_url.':'.$this->_port.'/RPC2', 'rb', false, $oCtx);
+                if (!$oStream) {
+                    if(isset($php_errormsg) && preg_match("/401/", $php_errormsg)) header("HTTP/1.1 401 Authentication failed");
+                    else header("HTTP/1.1 403 Forbidden");
+                    die();
+                }
+                $res = @stream_get_contents($oStream);
+                fclose($oStream);
+                if ($res === false || empty($res)) {
+                    $this->_error = __CLASS__.' > '.__METHOD__.'(l.'.__LINE__.') : Problem reading data from '.$this->_url.'/RPC2';
+                    return false;
+                } else {
+                    $res = $this->fn_xmlrpc_decode($res);
+                    if(isset($res['faultCode']) && $res['faultCode'] == 1){
+                        $this->_error = $res['faultString'];
+                        return false;
+                    }
+                    $this->_error = '';
+                    return $res;
+                }
             }
-            $output['@attributes'] = $a;
-          }
-          break;
-      }
-      return $output;
-    }
-
-    /**
-     * Replacement for "json_decode"
-     * @param $psString
-     * @return mixed|null
-     * @author Progi1984
-     * @url https://code.google.com/p/simplejson-php/source/browse/trunk/simplejson.php
-     */
-    private function fn_json_decode($psString, $pbAssoc = false){
-      if($this->_extPHPJson == true){
-        return json_decode($psString, true);
-      } else {
-        /** @url https://code.google.com/p/simplejson-php/source/browse/trunk/simplejson.php */
-        // $matchString = '/(".*?(?<!\\\\)"|\'.*?(?<!\\\\)\')/';
-        $matchString = '/".*?(?<!\\\\)"/';
-
-        // safety / validity test
-        $t = preg_replace( $matchString, '', $psString );
-        $t = preg_replace( '/[,:{}\[\]0-9.\-+Eaeflnr-u \n\r\t]/', '', $t );
-        if ($t != '') { return null; }
-
-        // build to/from hashes for all strings in the structure
-        $s2m = array();
-        $m2s = array();
-        preg_match_all( $matchString, $psString, $m );
-        foreach ($m[0] as $s) {
-          $hash       = '"' . md5( $s ) . '"';
-          $s2m[$s]    = $hash;
-          $m2s[$hash] = str_replace( '$', '\$', $s );  // prevent $ magic
         }
 
-        // hide the strings
-        $psString = strtr( $psString, $s2m );
-
-        // convert JS notation to PHP notation
-        $a = ($pbAssoc) ? '' : '(object) ';
-        $psString = strtr( $psString,
-          array(
-            ':' => '=>',
-            '[' => 'array(',
-            '{' => "{$a}array(",
-            ']' => ')',
-            '}' => ')'
-          )
-        );
-
-        // remove leading zeros to prevent incorrect type casting
-        $psString = preg_replace( '~([\s\(,>])(-?)0~', '$1$2', $psString );
-
-        // return the strings
-        $psString = strtr( $psString, $m2s );
-
-        /* "eval" string and return results.
-           As there is no try statement in PHP4, the trick here
-           is to suppress any parser errors while a function is
-           built and then run the function if it got made. */
-        $f = @create_function( '', "return {$psString};" );
-        $r = ($f) ? $f() : null;
-
-        // free mem (shouldn't really be needed, but it's polite)
-        unset( $s2m ); unset( $m2s ); unset( $f );
-
-        return $r;
-      }
-    }
-
-    private function _api($psMethod){
-      if($this->_extPHPCurl == true){
-        curl_setopt($this->_oCurl, CURLOPT_HEADER, false);
-        curl_setopt($this->_oCurl, CURLOPT_URL, $this->_url.'/RPC2');
-        curl_setopt($this->_oCurl, CURLOPT_PORT, $this->_port);
-        curl_setopt($this->_oCurl, CURLOPT_POST, true);
-        curl_setopt($this->_oCurl, CURLOPT_HTTPHEADER, array('Content-Type' => 'text/xml'));
-        curl_setopt($this->_oCurl, CURLOPT_RETURNTRANSFER, true);
-        $psContent = $this->fn_xmlrpc_encode_request($psMethod, array());
-        curl_setopt($this->_oCurl, CURLOPT_POSTFIELDS, $psContent);
-        $res = curl_exec($this->_oCurl);
-        if($res === false){
-          trigger_error(__CLASS__.' > '.__METHOD__.'(l.'.__LINE__.') : '.curl_error($this->_oCurl), E_USER_WARNING);
-          return false;
-        } else {
-          return $this->fn_xmlrpc_decode($res);
+        public function pingServer(){
+            if($this->_extPHPCurl == true){
+                curl_setopt($this->_oCurl, CURLOPT_HEADER, false);
+                curl_setopt($this->_oCurl, CURLOPT_URL, $this->_url.'/RPC2');
+                curl_setopt($this->_oCurl, CURLOPT_PORT, $this->_port);
+                curl_setopt($this->_oCurl, CURLOPT_POST, true);
+                curl_setopt($this->_oCurl, CURLOPT_HTTPHEADER, array('Content-Type' => 'text/xml'));
+                curl_setopt($this->_oCurl, CURLOPT_RETURNTRANSFER, 1);
+                curl_setopt($this->_oCurl, CURLOPT_TIMEOUT, 5);
+                $psContent = $this->fn_xmlrpc_encode_request('init', array());
+                curl_setopt($this->_oCurl, CURLOPT_POSTFIELDS, $psContent);
+                curl_exec($this->_oCurl);
+                $iHTTPCode = curl_getinfo($this->_oCurl, CURLINFO_HTTP_CODE);
+                if($iHTTPCode>=200 && $iHTTPCode<300){
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
+                $params = array(
+                    'http' => array(
+                        'method' => 'POST',
+                        'content' => $this->fn_xmlrpc_encode_request('init', array())
+                    )
+                );
+                $oCtx = stream_context_create($params);
+                $oStream = @fopen($this->_url.':'.$this->_port.'/RPC2', 'rb', false, $oCtx);
+                if ($oStream) {
+                    $res = @stream_get_contents($oStream);
+                    fclose($oStream);
+                    if (!($res === false || empty($res))){
+                        return true;
+                    }
+                }
+                return false;
+            }
         }
-      } else {
-        $params = array(
-          'http' => array(
-            'method' => 'POST',
-            'content' => $this->fn_xmlrpc_encode_request($psMethod, array())
-          )
-        );
-        $oCtx = stream_context_create($params);
-        $oStream = @fopen($this->_url.':'.$this->_port.'/RPC2', 'rb', false, $oCtx);
-        if (!$oStream) {
-          if(isset($php_errormsg) && preg_match("/401/", $php_errormsg)) header("HTTP/1.1 401 Authentication failed");
-          else header("HTTP/1.1 403 Forbidden");
-          die();
-        }
-        $res = @stream_get_contents($oStream);
-        fclose($oStream);
-        if ($res === false || empty($res)) {
-          $this->_error = __CLASS__.' > '.__METHOD__.'(l.'.__LINE__.') : Problem reading data from '.$this->_url.'/RPC2';
-          return false;
-        } else {
-          $res = $this->fn_xmlrpc_decode($res);
-          if(isset($res['faultCode']) && $res['faultCode'] == 1){
-            $this->_error = $res['faultString'];
-            return false;
-          }
-          $this->_error = '';
-          return $res;
-        }
-      }
-    }
 
-    public function pingServer(){
-      if($this->_extPHPCurl == true){
-        curl_setopt($this->_oCurl, CURLOPT_HEADER, false);
-        curl_setopt($this->_oCurl, CURLOPT_URL, $this->_url.'/RPC2');
-        curl_setopt($this->_oCurl, CURLOPT_PORT, $this->_port);
-        curl_setopt($this->_oCurl, CURLOPT_POST, true);
-        curl_setopt($this->_oCurl, CURLOPT_HTTPHEADER, array('Content-Type' => 'text/xml'));
-        curl_setopt($this->_oCurl, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($this->_oCurl, CURLOPT_TIMEOUT, 5);
-        $psContent = $this->fn_xmlrpc_encode_request('init', array());
-        curl_setopt($this->_oCurl, CURLOPT_POSTFIELDS, $psContent);
-        curl_exec($this->_oCurl);
-        $iHTTPCode = curl_getinfo($this->_oCurl, CURLINFO_HTTP_CODE);
-        if($iHTTPCode>=200 && $iHTTPCode<300){
-          return true;
-        } else {
-          return false;
+        /**
+         * Return the intercepted error
+         * @return string
+         * @author Progi1984
+         */
+        public function getError(){
+            return $this->_error;
         }
-      } else {
-        $params = array(
-          'http' => array(
-            'method' => 'POST',
-            'content' => $this->fn_xmlrpc_encode_request('init', array())
-          )
-        );
-        $oCtx = stream_context_create($params);
-        $oStream = @fopen($this->_url.':'.$this->_port.'/RPC2', 'rb', false, $oCtx);
-        if ($oStream) {
-          $res = @stream_get_contents($oStream);
-          fclose($oStream);
-          if (!($res === false || empty($res))){
-            return true;
-          }
-        }
-        return false;
-      }
-    }
-
-    /**
-     * Return the intercepted error
-     * @return string
-     * @author Progi1984
-     */
-    public function getError(){
-      return $this->_error;
-    }
 
     /**
      * Enable or disable the cache
