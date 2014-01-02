@@ -347,456 +347,456 @@
             return $this->_error;
         }
 
-    /**
-     * Enable or disable the cache
-     * @param boolean $bUseCache
-     * @return $this
-     * @author Progi1984
-     */
-    public function setCacheStatus($bUseCache){
-      $this->_useCache = $bUseCache;
-      return $this;
-    }
+        /**
+         * Enable or disable the cache
+         * @param boolean $bUseCache
+         * @return $this
+         * @author Progi1984
+         */
+        public function setCacheStatus($bUseCache){
+            $this->_useCache = $bUseCache;
+            return $this;
+        }
 
-    /**
-     * Get the cache status
-     * @return bool
-     * @author Progi1984
-     */
-    public function getCacheStatus(){
-      return $this->_useCache;
-    }
+        /**
+         * Get the cache status
+         * @return bool
+         * @author Progi1984
+         */
+        public function getCacheStatus(){
+            return $this->_useCache;
+        }
 
-    /**
-     * @return array
-     * @author Progi1984
-     */
-    public function listMethods(){
-      return $this->_api('system.listMethods');
-    }
+        /**
+         * @return array
+         * @author Progi1984
+         */
+        public function listMethods(){
+            return $this->_api('system.listMethods');
+        }
 
-    public function getCore(){
-      return $this->_api('getCore');
-    }
+        public function getCore(){
+            return $this->_api('getCore');
+        }
 
-    private function getCpu(){
-      if($this->_useCache){
-        if(!isset($this->_arrCache['getCpu'])){
-          $this->_arrCache['getCpu'] = $this->fn_json_decode($this->_api('getCpu'), true);
+        private function getCpu(){
+            if($this->_useCache){
+                if(!isset($this->_arrCache['getCpu'])){
+                    $this->_arrCache['getCpu'] = $this->fn_json_decode($this->_api('getCpu'), true);
+                }
+                return $this->_arrCache['getCpu'];
+            } else {
+                return $this->fn_json_decode($this->_api('getCpu'), true);
+            }
         }
-        return $this->_arrCache['getCpu'];
-      } else {
-        return $this->fn_json_decode($this->_api('getCpu'), true);
-      }
-    }
-    public function cpu_getIOWait(){
-      $res = $this->getCpu();
-      if($res === false){
-        return false;
-      } else {
-        if(isset($res['iowait'])){
-          return $res['iowait'];
-        } else {
-          return 0;
+        public function cpu_getIOWait(){
+            $res = $this->getCpu();
+            if($res === false){
+                return false;
+            } else {
+                if(isset($res['iowait'])){
+                    return $res['iowait'];
+                } else {
+                    return 0;
+                }
+            }
         }
-      }
-    }
-    public function cpu_getSystem(){
-      $res = $this->getCpu();
-      if($res === false){
-        return false;
-      } else {
-        if(isset($res['system'])){
-          return $res['system'];
-        } else {
-          return 0;
+        public function cpu_getSystem(){
+            $res = $this->getCpu();
+            if($res === false){
+                return false;
+            } else {
+                if(isset($res['system'])){
+                    return $res['system'];
+                } else {
+                    return 0;
+                }
+            }
         }
-      }
-    }
-    public function cpu_getIdle(){
-      $res = $this->getCpu();
-      if($res === false){
-        return false;
-      } else {
-        if(isset($res['idle'])){
-          return $res['idle'];
-        } else {
-          return 0;
+        public function cpu_getIdle(){
+            $res = $this->getCpu();
+            if($res === false){
+                return false;
+            } else {
+                if(isset($res['idle'])){
+                    return $res['idle'];
+                } else {
+                    return 0;
+                }
+            }
         }
-      }
-    }
-    public function cpu_getUser(){
-      $res = $this->getCpu();
-      if($res === false){
-        return false;
-      } else {
-        if(isset($res['user'])){
-          return $res['user'];
-        } else {
-          return 0;
+        public function cpu_getUser(){
+            $res = $this->getCpu();
+            if($res === false){
+                return false;
+            } else {
+                if(isset($res['user'])){
+                    return $res['user'];
+                } else {
+                    return 0;
+                }
+            }
         }
-      }
-    }
-    public function cpu_getIRQ(){
-      $res = $this->getCpu();
-      if($res === false){
-        return false;
-      } else {
-        if(isset($res['irq'])){
-          return $res['irq'];
-        } else {
-          return 0;
+        public function cpu_getIRQ(){
+            $res = $this->getCpu();
+            if($res === false){
+                return false;
+            } else {
+                if(isset($res['irq'])){
+                    return $res['irq'];
+                } else {
+                    return 0;
+                }
+            }
         }
-      }
-    }
-    public function cpu_getNice(){
-      $res = $this->getCpu();
-      if($res === false){
-        return false;
-      } else {
-        if(isset($res['nice'])){
-          return $res['nice'];
-        } else {
-          return 0;
+        public function cpu_getNice(){
+            $res = $this->getCpu();
+            if($res === false){
+                return false;
+            } else {
+                if(isset($res['nice'])){
+                    return $res['nice'];
+                } else {
+                    return 0;
+                }
+            }
         }
-      }
-    }
 
-    private function getDiskIO(){
-      if($this->_useCache){
-        if(!isset($this->_arrCache['getDiskIO'])){
-          $this->_arrCache['getDiskIO'] = $this->fn_json_decode($this->_api('getDiskIO'), true);
+        private function getDiskIO(){
+            if($this->_useCache){
+                if(!isset($this->_arrCache['getDiskIO'])){
+                    $this->_arrCache['getDiskIO'] = $this->fn_json_decode($this->_api('getDiskIO'), true);
+                }
+                return $this->_arrCache['getDiskIO'];
+            } else {
+                return $this->fn_json_decode($this->_api('getDiskIO'), true);
+            }
         }
-        return $this->_arrCache['getDiskIO'];
-      } else {
-        return $this->fn_json_decode($this->_api('getDiskIO'), true);
-      }
-    }
-    public function diskIO_getCount(){
-      $res = $this->getDiskIO();
-      if($res === false){
-        return false;
-      } else {
-        return count($res);
-      }
-    }
-    public function diskIO_getDiskName($piIdx){
-      $res = $this->getDiskIO();
-      if($res === false){
-        return false;
-      } else {
-        if(isset($res[$piIdx]['disk_name'])){
-          return $res[$piIdx]['disk_name'];
-        } else {
-          return '';
+        public function diskIO_getCount(){
+            $res = $this->getDiskIO();
+            if($res === false){
+                return false;
+            } else {
+                return count($res);
+            }
         }
-      }
-    }
-    public function diskIO_getReadBytes($piIdx){
-      $res = $this->getDiskIO();
-      if($res === false){
-        return false;
-      } else {
-        if(isset($res[$piIdx]['read_bytes'])){
-          return $res[$piIdx]['read_bytes'];
-        } else {
-          return '';
+        public function diskIO_getDiskName($piIdx){
+            $res = $this->getDiskIO();
+            if($res === false){
+                return false;
+            } else {
+                if(isset($res[$piIdx]['disk_name'])){
+                    return $res[$piIdx]['disk_name'];
+                } else {
+                   return '';
+                }
+            }
         }
-      }
-    }
-    public function diskIO_getWriteBytes($piIdx){
-      $res = $this->getDiskIO();
-      if($res === false){
-        return false;
-      } else {
-        if(isset($res[$piIdx]['write_bytes'])){
-          return $res[$piIdx]['write_bytes'];
-        } else {
-          return '';
+        public function diskIO_getReadBytes($piIdx){
+            $res = $this->getDiskIO();
+            if($res === false){
+                return false;
+            } else {
+                if(isset($res[$piIdx]['read_bytes'])){
+                    return $res[$piIdx]['read_bytes'];
+                } else {
+                    return '';
+                }
+            }
         }
-      }
-    }
+        public function diskIO_getWriteBytes($piIdx){
+            $res = $this->getDiskIO();
+            if($res === false){
+                return false;
+            } else {
+                if(isset($res[$piIdx]['write_bytes'])){
+                    return $res[$piIdx]['write_bytes'];
+                } else {
+                    return '';
+                }
+            }
+        }
 
-    private function getFs(){
-      if($this->_useCache){
-        if(!isset($this->_arrCache['getFs'])){
-          $this->_arrCache['getFs'] = $this->fn_json_decode($this->_api('getFs'), true);
+        private function getFs(){
+            if($this->_useCache){
+                if(!isset($this->_arrCache['getFs'])){
+                    $this->_arrCache['getFs'] = $this->fn_json_decode($this->_api('getFs'), true);
+                }
+                return $this->_arrCache['getFs'];
+            } else {
+                return $this->fn_json_decode($this->_api('getFs'), true);
+            }
         }
-        return $this->_arrCache['getFs'];
-      } else {
-        return $this->fn_json_decode($this->_api('getFs'), true);
-      }
-    }
-    public function fs_getCount(){
-      $res = $this->getFs();
-      if($res === false){
-        return false;
-      } else {
-        return count($res);
-      }
-    }
-    public function fs_getMountPoint($piIdx){
-      $res = $this->getFs();
-      if($res === false){
-        return false;
-      } else {
-        if(isset($res[$piIdx]['mnt_point'])){
-          return $res[$piIdx]['mnt_point'];
-        } else {
-          return '';
+        public function fs_getCount(){
+            $res = $this->getFs();
+            if($res === false){
+                return false;
+            } else {
+                return count($res);
+            }
         }
-      }
-    }
-    public function fs_getDeviceName($piIdx){
-      $res = $this->getFs();
-      if($res === false){
-        return false;
-      } else {
-        if(isset($res[$piIdx]['device_name'])){
-          return $res[$piIdx]['device_name'];
-        } else {
-          return '';
+        public function fs_getMountPoint($piIdx){
+            $res = $this->getFs();
+            if($res === false){
+                return false;
+            } else {
+                if(isset($res[$piIdx]['mnt_point'])){
+                    return $res[$piIdx]['mnt_point'];
+                } else {
+                    return '';
+                }
+            }
         }
-      }
-    }
-    public function fs_getFileSystemType($piIdx){
-      $res = $this->getFs();
-      if($res === false){
-        return false;
-      } else {
-        if(isset($res[$piIdx]['fs_type'])){
-          return $res[$piIdx]['fs_type'];
-        } else {
-          return '';
+        public function fs_getDeviceName($piIdx){
+            $res = $this->getFs();
+            if($res === false){
+                return false;
+            } else {
+                if(isset($res[$piIdx]['device_name'])){
+                    return $res[$piIdx]['device_name'];
+                } else {
+                    return '';
+                }
+            }
         }
-      }
-    }
-    public function fs_getUsed($piIdx){
-      $res = $this->getFs();
-      if($res === false){
-        return false;
-      } else {
-        if(isset($res[$piIdx]['used'])){
-          return $res[$piIdx]['used'];
-        } else {
-          return 0;
+        public function fs_getFileSystemType($piIdx){
+            $res = $this->getFs();
+            if($res === false){
+                return false;
+            } else {
+                if(isset($res[$piIdx]['fs_type'])){
+                    return $res[$piIdx]['fs_type'];
+                } else {
+                    return '';
+                }
+            }
         }
-      }
-    }
-    public function fs_getAvailable($piIdx){
-      $res = $this->getFs();
-      if($res === false){
-        return false;
-      } else {
-        if(isset($res[$piIdx]['avail'])){
-          return $res[$piIdx]['avail'];
-        } else {
-          return 0;
+        public function fs_getUsed($piIdx){
+            $res = $this->getFs();
+            if($res === false){
+                return false;
+            } else {
+                if(isset($res[$piIdx]['used'])){
+                    return $res[$piIdx]['used'];
+                } else {
+                    return 0;
+                }
+            }
         }
-      }
-    }
-    public function fs_getSize($piIdx){
-      $res = $this->getFs();
-      if($res === false){
-        return false;
-      } else {
-        if(isset($res[$piIdx]['size'])){
-          return $res[$piIdx]['size'];
-        } else {
-          return 0;
+        public function fs_getAvailable($piIdx){
+            $res = $this->getFs();
+            if($res === false){
+                return false;
+            } else {
+                if(isset($res[$piIdx]['avail'])){
+                    return $res[$piIdx]['avail'];
+                } else {
+                    return 0;
+                }
+            }
         }
-      }
-    }
+        public function fs_getSize($piIdx){
+            $res = $this->getFs();
+            if($res === false){
+                return false;
+            } else {
+                if(isset($res[$piIdx]['size'])){
+                    return $res[$piIdx]['size'];
+                } else {
+                    return 0;
+                }
+            }
+        }
 
-    private function getLoad(){
-      if($this->_useCache){
-        if(!isset($this->_arrCache['getLoad'])){
-          $this->_arrCache['getLoad'] = $this->fn_json_decode($this->_api('getLoad'), true);
+        private function getLoad(){
+            if($this->_useCache){
+                if(!isset($this->_arrCache['getLoad'])){
+                    $this->_arrCache['getLoad'] = $this->fn_json_decode($this->_api('getLoad'), true);
+                }
+                return $this->_arrCache['getLoad'];
+            } else {
+                return $this->fn_json_decode($this->_api('getLoad'), true);
+            }
         }
-        return $this->_arrCache['getLoad'];
-      } else {
-        return $this->fn_json_decode($this->_api('getLoad'), true);
-      }
-    }
-    public function load_getMin1(){
-      $res = $this->getLoad();
-      if($res === false){
-        return false;
-      } else {
-        if(isset($res['min1'])){
-          return $res['min1'];
-        } else {
-          return 0;
+        public function load_getMin1(){
+            $res = $this->getLoad();
+            if($res === false){
+                return false;
+            } else {
+                if(isset($res['min1'])){
+                    return $res['min1'];
+                } else {
+                    return 0;
+                }
+            }
         }
-      }
-    }
-    public function load_getMin5(){
-      $res = $this->getLoad();
-      if($res === false){
-        return false;
-      } else {
-        if(isset($res['min5'])){
-          return $res['min5'];
-        } else {
-          return 0;
+        public function load_getMin5(){
+            $res = $this->getLoad();
+            if($res === false){
+                return false;
+            } else {
+                if(isset($res['min5'])){
+                    return $res['min5'];
+                } else {
+                    return 0;
+                }
+            }
         }
-      }
-    }
-    public function load_getMin15(){
-      $res = $this->getLoad();
-      if($res === false){
-        return false;
-      } else {
-        if(isset($res['min15'])){
-          return $res['min15'];
-        } else {
-          return 0;
+        public function load_getMin15(){
+            $res = $this->getLoad();
+            if($res === false){
+                return false;
+            } else {
+                if(isset($res['min15'])){
+                    return $res['min15'];
+                } else {
+                    return 0;
+                }
+            }
         }
-      }
-    }
 
-    private function getLimits(){
-      if($this->_useCache){
-        if(!isset($this->_arrCache['getAllLimits'])){
-          $this->_arrCache['getAllLimits'] = $this->fn_json_decode($this->_api('getAllLimits'), true);
+        private function getLimits(){
+            if($this->_useCache){
+                if(!isset($this->_arrCache['getAllLimits'])){
+                    $this->_arrCache['getAllLimits'] = $this->fn_json_decode($this->_api('getAllLimits'), true);
+                }
+                return $this->_arrCache['getAllLimits'];
+            } else {
+                return $this->fn_json_decode($this->_api('getAllLimits'), true);
+            }
         }
-        return $this->_arrCache['getAllLimits'];
-      } else {
-        return $this->fn_json_decode($this->_api('getAllLimits'), true);
-      }
-    }
-    public function limit_getSTD(){
-      $res = $this->getLimits();
-      if($res === false){
-        return false;
-      } else {
-        if(isset($res['STD'])){
-          return $res['STD'];
-        } else {
-          return 0;
+        public function limit_getSTD(){
+            $res = $this->getLimits();
+            if($res === false){
+                return false;
+            } else {
+                if(isset($res['STD'])){
+                    return $res['STD'];
+                } else {
+                    return 0;
+                }
+            }
         }
-      }
-    }
-    public function limit_getCPU_IOWait(){
-      $res = $this->getLimits();
-      if($res === false){
-        return false;
-      } else {
-        if(isset($res['CPU_IOWAIT'])){
-          return $res['CPU_IOWAIT'];
-        } else {
-          return 0;
+        public function limit_getCPU_IOWait(){
+            $res = $this->getLimits();
+            if($res === false){
+                return false;
+            } else {
+                if(isset($res['CPU_IOWAIT'])){
+                    return $res['CPU_IOWAIT'];
+                } else {
+                    return 0;
+                }
+          }
         }
-      }
-    }
-    public function limit_getFS(){
-      $res = $this->getLimits();
-      if($res === false){
-        return false;
-      } else {
-        if(isset($res['FS'])){
-          return $res['FS'];
-        } else {
-          return 0;
+        public function limit_getFS(){
+            $res = $this->getLimits();
+            if($res === false){
+                return false;
+            } else {
+                if(isset($res['FS'])){
+                    return $res['FS'];
+                } else {
+                    return 0;
+                }
+            }
         }
-      }
-    }
-    public function limit_getLoad(){
-      $res = $this->getLimits();
-      if($res === false){
-        return false;
-      } else {
-        if(isset($res['LOAD'])){
-          return $res['LOAD'];
-        } else {
-          return 0;
+        public function limit_getLoad(){
+            $res = $this->getLimits();
+            if($res === false){
+                return false;
+            } else {
+                if(isset($res['LOAD'])){
+                    return $res['LOAD'];
+                } else {
+                    return 0;
+                }
+            }
         }
-      }
-    }
-    public function limit_getCPUSystem(){
-      $res = $this->getLimits();
-      if($res === false){
-        return false;
-      } else {
-        if(isset($res['CPU_SYSTEM'])){
-          return $res['CPU_SYSTEM'];
-        } else {
-          return 0;
+        public function limit_getCPUSystem(){
+            $res = $this->getLimits();
+            if($res === false){
+                return false;
+            } else {
+                if(isset($res['CPU_SYSTEM'])){
+                    return $res['CPU_SYSTEM'];
+                } else {
+                    return 0;
+                }
+            }
         }
-      }
-    }
-    public function limit_getProcessMem(){
-      $res = $this->getLimits();
-      if($res === false){
-        return false;
-      } else {
-        if(isset($res['PROCESS_MEM'])){
-          return $res['PROCESS_MEM'];
-        } else {
-          return 0;
+        public function limit_getProcessMem(){
+            $res = $this->getLimits();
+            if($res === false){
+                return false;
+            } else {
+                if(isset($res['PROCESS_MEM'])){
+                    return $res['PROCESS_MEM'];
+                } else {
+                    return 0;
+                }
+            }
         }
-      }
-    }
-    public function limit_getTemp(){
-      $res = $this->getLimits();
-      if($res === false){
-        return false;
-      } else {
-        if(isset($res['TEMP'])){
-          return $res['TEMP'];
-        } else {
-          return 0;
+        public function limit_getTemp(){
+            $res = $this->getLimits();
+            if($res === false){
+                return false;
+            } else {
+                if(isset($res['TEMP'])){
+                    return $res['TEMP'];
+                } else {
+                    return 0;
+                }
+            }
         }
-      }
-    }
-    public function limit_getMem(){
-      $res = $this->getLimits();
-      if($res === false){
-        return false;
-      } else {
-        if(isset($res['MEM'])){
-          return $res['MEM'];
-        } else {
-          return 0;
+        public function limit_getMem(){
+            $res = $this->getLimits();
+            if($res === false){
+                return false;
+            } else {
+                if(isset($res['MEM'])){
+                    return $res['MEM'];
+                } else {
+                    return 0;
+                }
+            }
         }
-      }
-    }
-    public function limit_getCPUUser(){
-      $res = $this->getLimits();
-      if($res === false){
-        return false;
-      } else {
-        if(isset($res['CPU_USER'])){
-          return $res['CPU_USER'];
-        } else {
-          return 0;
+        public function limit_getCPUUser(){
+            $res = $this->getLimits();
+            if($res === false){
+                return false;
+            } else {
+                if(isset($res['CPU_USER'])){
+                    return $res['CPU_USER'];
+                } else {
+                    return 0;
+                }
+            }
         }
-      }
-    }
-    public function limit_getProcessCPU(){
-      $res = $this->getLimits();
-      if($res === false){
-        return false;
-      } else {
-        if(isset($res['PROCESS_CPU'])){
-          return $res['PROCESS_CPU'];
-        } else {
-          return 0;
+        public function limit_getProcessCPU(){
+            $res = $this->getLimits();
+            if($res === false){
+                return false;
+            } else {
+                if(isset($res['PROCESS_CPU'])){
+                    return $res['PROCESS_CPU'];
+                } else {
+                    return 0;
+                }
+            }
         }
-      }
-    }
-    public function limit_getSWAP(){
-      $res = $this->getLimits();
-      if($res === false){
-        return false;
-      } else {
-        if(isset($res['SWAP'])){
-          return $res['SWAP'];
-        } else {
-          return 0;
+        public function limit_getSWAP(){
+            $res = $this->getLimits();
+            if($res === false){
+                return false;
+            } else {
+                if(isset($res['SWAP'])){
+                    return $res['SWAP'];
+                } else {
+                    return 0;
+                }
+            }
         }
-      }
-    }
 
     private function getMem(){
       if($this->_useCache){
