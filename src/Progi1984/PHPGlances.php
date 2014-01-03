@@ -47,7 +47,8 @@ class PhpGlances
      * @return string
      * @author Progi1984
      */
-    private function fn_xmlrpc_encode_request($psString, array $parrArray){
+    private function fnXmlRpcEncodeRequest($psString, array $parrArray)
+    {
         if($this->_extPHPXMLRPC == true){
             return xmlrpc_encode_request($psString, $parrArray);
         } else {
@@ -63,7 +64,8 @@ class PhpGlances
      * @return array|mixed|string
      * @author Progi1984
      */
-    private function fn_xmlrpc_decode($psString){
+    private function fnXmlRpcDecode($psString)
+    {
         if($this->_extPHPXMLRPC == true){
             return xmlrpc_decode($psString);
         } else {
@@ -98,7 +100,7 @@ class PhpGlances
             } else {
                 $oXML = new DOMDocument();
                 $oXML->loadXML($psString);
-                $arrXML = $this->fn_xml_convert($oXML->documentElement);
+                $arrXML = $this->fnXmlConvert($oXML->documentElement);
                 // Array
                 if(isset($arrXML['params']['param']['value']['array'])){
                     $arrReturn = array();
@@ -135,7 +137,8 @@ class PhpGlances
      * @author Progi1984
      * @url http://www.lalit.org/wordpress/wp-content/uploads/2011/07/XML2Array.txt?ver=0.2
      */
-    private function fn_xml_convert($node){
+    private function fnXmlConvert($node)
+    {
         $output = array();
         switch ($node->nodeType) {
             case XML_CDATA_SECTION_NODE:
@@ -199,7 +202,8 @@ class PhpGlances
      * @author Progi1984
      * @url https://code.google.com/p/simplejson-php/source/browse/trunk/simplejson.php
      */
-    private function fn_json_decode($psString, $pbAssoc = false){
+    private function fnJsonDecode($psString, $pbAssoc = false)
+    {
         if($this->_extPHPJson == true){
             return json_decode($psString, true);
         } else {
@@ -255,7 +259,8 @@ class PhpGlances
         }
     }
 
-    private function _api($psMethod){
+    private function _api($psMethod)
+    {
         if($this->_extPHPCurl == true){
             curl_setopt($this->_oCurl, CURLOPT_HEADER, false);
             curl_setopt($this->_oCurl, CURLOPT_URL, $this->_url.'/RPC2');
@@ -263,20 +268,20 @@ class PhpGlances
             curl_setopt($this->_oCurl, CURLOPT_POST, true);
             curl_setopt($this->_oCurl, CURLOPT_HTTPHEADER, array('Content-Type' => 'text/xml'));
             curl_setopt($this->_oCurl, CURLOPT_RETURNTRANSFER, true);
-            $psContent = $this->fn_xmlrpc_encode_request($psMethod, array());
+            $psContent = $this->fnXmlRpcEncodeRequest($psMethod, array());
             curl_setopt($this->_oCurl, CURLOPT_POSTFIELDS, $psContent);
             $res = curl_exec($this->_oCurl);
             if($res === false){
                 trigger_error(__CLASS__.' > '.__METHOD__.'(l.'.__LINE__.') : '.curl_error($this->_oCurl), E_USER_WARNING);
                 return false;
             } else {
-                return $this->fn_xmlrpc_decode($res);
+                return $this->fnXmlRpcDecode($res);
             }
         } else {
             $params = array(
                 'http' => array(
                     'method' => 'POST',
-                    'content' => $this->fn_xmlrpc_encode_request($psMethod, array())
+                    'content' => $this->fnXmlRpcEncodeRequest($psMethod, array())
                 )
             );
             $oCtx = stream_context_create($params);
@@ -292,7 +297,7 @@ class PhpGlances
                 $this->_error = __CLASS__.' > '.__METHOD__.'(l.'.__LINE__.') : Problem reading data from '.$this->_url.'/RPC2';
                 return false;
             } else {
-                $res = $this->fn_xmlrpc_decode($res);
+                $res = $this->fnXmlRpcDecode($res);
                 if(isset($res['faultCode']) && $res['faultCode'] == 1){
                     $this->_error = $res['faultString'];
                     return false;
@@ -303,7 +308,8 @@ class PhpGlances
         }
     }
 
-    public function pingServer(){
+    public function pingServer()
+    {
         if($this->_extPHPCurl == true){
             curl_setopt($this->_oCurl, CURLOPT_HEADER, false);
             curl_setopt($this->_oCurl, CURLOPT_URL, $this->_url.'/RPC2');
@@ -312,7 +318,7 @@ class PhpGlances
             curl_setopt($this->_oCurl, CURLOPT_HTTPHEADER, array('Content-Type' => 'text/xml'));
             curl_setopt($this->_oCurl, CURLOPT_RETURNTRANSFER, 1);
             curl_setopt($this->_oCurl, CURLOPT_TIMEOUT, 5);
-            $psContent = $this->fn_xmlrpc_encode_request('init', array());
+            $psContent = $this->fnXmlRpcEncodeRequest('init', array());
             curl_setopt($this->_oCurl, CURLOPT_POSTFIELDS, $psContent);
             curl_exec($this->_oCurl);
             $iHTTPCode = curl_getinfo($this->_oCurl, CURLINFO_HTTP_CODE);
@@ -325,7 +331,7 @@ class PhpGlances
             $params = array(
                 'http' => array(
                     'method' => 'POST',
-                    'content' => $this->fn_xmlrpc_encode_request('init', array())
+                    'content' => $this->fnXmlRpcEncodeRequest('init', array())
                 )
             );
             $oCtx = stream_context_create($params);
@@ -346,7 +352,8 @@ class PhpGlances
      * @return string
      * @author Progi1984
      */
-    public function getError(){
+    public function getError()
+    {
         return $this->_error;
     }
 
@@ -356,7 +363,8 @@ class PhpGlances
      * @return $this
      * @author Progi1984
      */
-    public function setCacheStatus($bUseCache){
+    public function setCacheStatus($bUseCache)
+    {
         $this->_useCache = $bUseCache;
         return $this;
     }
@@ -366,7 +374,8 @@ class PhpGlances
      * @return bool
      * @author Progi1984
      */
-    public function getCacheStatus(){
+    public function getCacheStatus()
+    {
         return $this->_useCache;
     }
 
@@ -374,25 +383,29 @@ class PhpGlances
      * @return array
      * @author Progi1984
      */
-    public function listMethods(){
+    public function listMethods()
+    {
         return $this->_api('system.listMethods');
     }
 
-    public function getCore(){
+    public function getCore()
+    {
         return $this->_api('getCore');
     }
 
-    private function getCpu(){
+    private function getCpu()
+    {
         if($this->_useCache){
             if(!isset($this->_arrCache['getCpu'])){
-                $this->_arrCache['getCpu'] = $this->fn_json_decode($this->_api('getCpu'), true);
+                $this->_arrCache['getCpu'] = $this->fnJsonDecode($this->_api('getCpu'), true);
             }
             return $this->_arrCache['getCpu'];
         } else {
-            return $this->fn_json_decode($this->_api('getCpu'), true);
+            return $this->fnJsonDecode($this->_api('getCpu'), true);
         }
     }
-    public function cpu_getIOWait(){
+    public function cpu_getIOWait()
+    {
         $res = $this->getCpu();
         if($res === false){
             return false;
@@ -404,7 +417,8 @@ class PhpGlances
             }
         }
     }
-    public function cpu_getSystem(){
+    public function cpu_getSystem()
+    {
         $res = $this->getCpu();
         if($res === false){
             return false;
@@ -416,7 +430,8 @@ class PhpGlances
             }
         }
     }
-    public function cpu_getIdle(){
+    public function cpu_getIdle()
+    {
         $res = $this->getCpu();
         if($res === false){
             return false;
@@ -428,7 +443,8 @@ class PhpGlances
             }
         }
     }
-    public function cpu_getUser(){
+    public function cpu_getUser()
+    {
         $res = $this->getCpu();
         if($res === false){
             return false;
@@ -440,7 +456,8 @@ class PhpGlances
             }
         }
     }
-    public function cpu_getIRQ(){
+    public function cpu_getIRQ()
+    {
         $res = $this->getCpu();
         if($res === false){
             return false;
@@ -452,7 +469,8 @@ class PhpGlances
             }
         }
     }
-    public function cpu_getNice(){
+    public function cpu_getNice()
+    {
         $res = $this->getCpu();
         if($res === false){
             return false;
@@ -465,17 +483,19 @@ class PhpGlances
         }
     }
 
-    private function getDiskIO(){
+    private function getDiskIO()
+    {
         if($this->_useCache){
             if(!isset($this->_arrCache['getDiskIO'])){
-                $this->_arrCache['getDiskIO'] = $this->fn_json_decode($this->_api('getDiskIO'), true);
+                $this->_arrCache['getDiskIO'] = $this->fnJsonDecode($this->_api('getDiskIO'), true);
             }
             return $this->_arrCache['getDiskIO'];
         } else {
-            return $this->fn_json_decode($this->_api('getDiskIO'), true);
+            return $this->fnJsonDecode($this->_api('getDiskIO'), true);
         }
     }
-    public function diskIO_getCount(){
+    public function diskIO_getCount()
+    {
         $res = $this->getDiskIO();
         if($res === false){
             return false;
@@ -483,7 +503,8 @@ class PhpGlances
             return count($res);
         }
     }
-    public function diskIO_getDiskName($piIdx){
+    public function diskIO_getDiskName($piIdx)
+    {
         $res = $this->getDiskIO();
         if($res === false){
             return false;
@@ -495,7 +516,8 @@ class PhpGlances
             }
         }
     }
-    public function diskIO_getReadBytes($piIdx){
+    public function diskIO_getReadBytes($piIdx)
+    {
         $res = $this->getDiskIO();
         if($res === false){
             return false;
@@ -507,7 +529,8 @@ class PhpGlances
             }
         }
     }
-    public function diskIO_getWriteBytes($piIdx){
+    public function diskIO_getWriteBytes($piIdx)
+    {
         $res = $this->getDiskIO();
         if($res === false){
             return false;
@@ -520,17 +543,19 @@ class PhpGlances
         }
     }
 
-    private function getFs(){
+    private function getFs()
+    {
         if($this->_useCache){
             if(!isset($this->_arrCache['getFs'])){
-                $this->_arrCache['getFs'] = $this->fn_json_decode($this->_api('getFs'), true);
+                $this->_arrCache['getFs'] = $this->fnJsonDecode($this->_api('getFs'), true);
             }
             return $this->_arrCache['getFs'];
         } else {
-            return $this->fn_json_decode($this->_api('getFs'), true);
+            return $this->fnJsonDecode($this->_api('getFs'), true);
         }
     }
-    public function fs_getCount(){
+    public function fs_getCount()
+    {
         $res = $this->getFs();
         if($res === false){
             return false;
@@ -538,7 +563,8 @@ class PhpGlances
             return count($res);
         }
     }
-    public function fs_getMountPoint($piIdx){
+    public function fs_getMountPoint($piIdx)
+    {
         $res = $this->getFs();
         if($res === false){
             return false;
@@ -550,7 +576,8 @@ class PhpGlances
             }
         }
     }
-    public function fs_getDeviceName($piIdx){
+    public function fs_getDeviceName($piIdx)
+    {
         $res = $this->getFs();
         if($res === false){
             return false;
@@ -562,7 +589,8 @@ class PhpGlances
             }
         }
     }
-    public function fs_getFileSystemType($piIdx){
+    public function fs_getFileSystemType($piIdx)
+    {
         $res = $this->getFs();
         if($res === false){
             return false;
@@ -574,7 +602,8 @@ class PhpGlances
             }
         }
     }
-    public function fs_getUsed($piIdx){
+    public function fs_getUsed($piIdx)
+    {
         $res = $this->getFs();
         if($res === false){
             return false;
@@ -586,7 +615,8 @@ class PhpGlances
             }
         }
     }
-    public function fs_getAvailable($piIdx){
+    public function fs_getAvailable($piIdx)
+    {
         $res = $this->getFs();
         if($res === false){
             return false;
@@ -598,7 +628,8 @@ class PhpGlances
             }
         }
     }
-    public function fs_getSize($piIdx){
+    public function fs_getSize($piIdx)
+    {
         $res = $this->getFs();
         if($res === false){
             return false;
@@ -611,17 +642,19 @@ class PhpGlances
         }
     }
 
-    private function getLoad(){
+    private function getLoad()
+    {
         if($this->_useCache){
             if(!isset($this->_arrCache['getLoad'])){
-                $this->_arrCache['getLoad'] = $this->fn_json_decode($this->_api('getLoad'), true);
+                $this->_arrCache['getLoad'] = $this->fnJsonDecode($this->_api('getLoad'), true);
             }
             return $this->_arrCache['getLoad'];
         } else {
-            return $this->fn_json_decode($this->_api('getLoad'), true);
+            return $this->fnJsonDecode($this->_api('getLoad'), true);
         }
     }
-    public function load_getMin1(){
+    public function load_getMin1()
+    {
         $res = $this->getLoad();
         if($res === false){
             return false;
@@ -633,7 +666,8 @@ class PhpGlances
             }
         }
     }
-    public function load_getMin5(){
+    public function load_getMin5()
+    {
         $res = $this->getLoad();
         if($res === false){
             return false;
@@ -645,7 +679,8 @@ class PhpGlances
             }
         }
     }
-    public function load_getMin15(){
+    public function load_getMin15()
+    {
         $res = $this->getLoad();
         if($res === false){
             return false;
@@ -658,17 +693,19 @@ class PhpGlances
         }
     }
 
-    private function getLimits(){
+    private function getLimits()
+    {
         if($this->_useCache){
             if(!isset($this->_arrCache['getAllLimits'])){
-                $this->_arrCache['getAllLimits'] = $this->fn_json_decode($this->_api('getAllLimits'), true);
+                $this->_arrCache['getAllLimits'] = $this->fnJsonDecode($this->_api('getAllLimits'), true);
             }
             return $this->_arrCache['getAllLimits'];
         } else {
-            return $this->fn_json_decode($this->_api('getAllLimits'), true);
+            return $this->fnJsonDecode($this->_api('getAllLimits'), true);
         }
     }
-    public function limit_getSTD(){
+    public function limit_getSTD()
+    {
         $res = $this->getLimits();
         if($res === false){
             return false;
@@ -680,7 +717,8 @@ class PhpGlances
             }
         }
     }
-    public function limit_getCPU_IOWait(){
+    public function limit_getCPU_IOWait()
+    {
         $res = $this->getLimits();
         if($res === false){
             return false;
@@ -692,7 +730,8 @@ class PhpGlances
             }
       }
     }
-    public function limit_getFS(){
+    public function limit_getFS()
+    {
         $res = $this->getLimits();
         if($res === false){
             return false;
@@ -704,7 +743,8 @@ class PhpGlances
             }
         }
     }
-    public function limit_getLoad(){
+    public function limit_getLoad()
+    {
         $res = $this->getLimits();
         if($res === false){
             return false;
@@ -716,7 +756,8 @@ class PhpGlances
             }
         }
     }
-    public function limit_getCPUSystem(){
+    public function limit_getCPUSystem()
+    {
         $res = $this->getLimits();
         if($res === false){
             return false;
@@ -728,7 +769,8 @@ class PhpGlances
             }
         }
     }
-    public function limit_getProcessMem(){
+    public function limit_getProcessMem()
+    {
         $res = $this->getLimits();
         if($res === false){
             return false;
@@ -740,7 +782,8 @@ class PhpGlances
             }
         }
     }
-    public function limit_getTemp(){
+    public function limit_getTemp()
+    {
         $res = $this->getLimits();
         if($res === false){
             return false;
@@ -752,7 +795,8 @@ class PhpGlances
             }
         }
     }
-    public function limit_getMem(){
+    public function limit_getMem()
+    {
         $res = $this->getLimits();
         if($res === false){
             return false;
@@ -764,7 +808,8 @@ class PhpGlances
             }
         }
     }
-    public function limit_getCPUUser(){
+    public function limit_getCPUUser()
+    {
         $res = $this->getLimits();
         if($res === false){
             return false;
@@ -776,7 +821,8 @@ class PhpGlances
             }
         }
     }
-    public function limit_getProcessCPU(){
+    public function limit_getProcessCPU()
+    {
         $res = $this->getLimits();
         if($res === false){
             return false;
@@ -788,7 +834,8 @@ class PhpGlances
             }
         }
     }
-    public function limit_getSWAP(){
+    public function limit_getSWAP()
+    {
         $res = $this->getLimits();
         if($res === false){
             return false;
@@ -801,17 +848,19 @@ class PhpGlances
         }
     }
 
-    private function getMem(){
+    private function getMem()
+    {
         if($this->_useCache){
             if(!isset($this->_arrCache['getMem'])){
-                $this->_arrCache['getMem'] = $this->fn_json_decode($this->_api('getMem'), true);
+                $this->_arrCache['getMem'] = $this->fnJsonDecode($this->_api('getMem'), true);
             }
             return $this->_arrCache['getMem'];
         } else {
-            return $this->fn_json_decode($this->_api('getMem'), true);
+            return $this->fnJsonDecode($this->_api('getMem'), true);
         }
     }
-    public function mem_getInactive(){
+    public function mem_getInactive()
+    {
         $res = $this->getMem();
         if($res === false){
             return false;
@@ -823,7 +872,8 @@ class PhpGlances
             }
         }
     }
-    public function mem_getCached(){
+    public function mem_getCached()
+    {
         $res = $this->getMem();
         if($res === false){
             return false;
@@ -835,7 +885,8 @@ class PhpGlances
             }
         }
     }
-    public function mem_getUsed(){
+    public function mem_getUsed()
+    {
         $res = $this->getMem();
         if($res === false){
             return false;
@@ -847,7 +898,8 @@ class PhpGlances
             }
         }
     }
-    public function mem_getBuffers(){
+    public function mem_getBuffers()
+    {
         $res = $this->getMem();
         if($res === false){
             return false;
@@ -859,7 +911,8 @@ class PhpGlances
             }
         }
     }
-    public function mem_getActive(){
+    public function mem_getActive()
+    {
         $res = $this->getMem();
         if($res === false){
             return false;
@@ -871,7 +924,8 @@ class PhpGlances
             }
         }
     }
-    public function mem_getTotal(){
+    public function mem_getTotal()
+    {
         $res = $this->getMem();
         if($res === false){
             return false;
@@ -883,7 +937,8 @@ class PhpGlances
             }
         }
     }
-    public function mem_getPercent(){
+    public function mem_getPercent()
+    {
         $res = $this->getMem();
         if($res === false){
             return false;
@@ -895,7 +950,8 @@ class PhpGlances
             }
         }
     }
-    public function mem_getFree(){
+    public function mem_getFree()
+    {
         $res = $this->getMem();
         if($res === false){
             return false;
@@ -908,17 +964,19 @@ class PhpGlances
         }
     }
 
-    private function getMemSwap(){
+    private function getMemSwap()
+    {
         if($this->_useCache){
             if(!isset($this->_arrCache['getMemSwap'])){
-                $this->_arrCache['getMemSwap'] = $this->fn_json_decode($this->_api('getMemSwap'), true);
+                $this->_arrCache['getMemSwap'] = $this->fnJsonDecode($this->_api('getMemSwap'), true);
             }
             return $this->_arrCache['getMemSwap'];
         } else {
-            return $this->fn_json_decode($this->_api('getMemSwap'), true);
+            return $this->fnJsonDecode($this->_api('getMemSwap'), true);
         }
     }
-    public function memswap_getTotal(){
+    public function memswap_getTotal()
+    {
         $res = $this->getMemSwap();
         if($res === false){
             return false;
@@ -930,7 +988,8 @@ class PhpGlances
             }
         }
     }
-    public function memswap_getPercent(){
+    public function memswap_getPercent()
+    {
         $res = $this->getMemSwap();
         if($res === false){
             return false;
@@ -942,7 +1001,8 @@ class PhpGlances
             }
         }
     }
-    public function memswap_getUsed(){
+    public function memswap_getUsed()
+    {
         $res = $this->getMemSwap();
         if($res === false){
             return false;
@@ -955,17 +1015,19 @@ class PhpGlances
         }
     }
 
-    private function getNetwork(){
+    private function getNetwork()
+    {
         if($this->_useCache){
             if(!isset($this->_arrCache['getNetwork'])){
-                $this->_arrCache['getNetwork'] = $this->fn_json_decode($this->_api('getNetwork'), true);
+                $this->_arrCache['getNetwork'] = $this->fnJsonDecode($this->_api('getNetwork'), true);
             }
             return $this->_arrCache['getNetwork'];
         } else {
-            return $this->fn_json_decode($this->_api('getNetwork'), true);
+            return $this->fnJsonDecode($this->_api('getNetwork'), true);
         }
     }
-    public function network_getCount(){
+    public function network_getCount()
+    {
         $res = $this->getNetwork();
         if($res === false){
             return false;
@@ -973,7 +1035,8 @@ class PhpGlances
             return count($res);
         }
     }
-    public function network_getInterfaceName($piIdx){
+    public function network_getInterfaceName($piIdx)
+    {
         $res = $this->getNetwork();
         if($res === false){
             return false;
@@ -985,7 +1048,8 @@ class PhpGlances
             }
         }
     }
-    public function network_getRX($piIdx){
+    public function network_getRX($piIdx)
+    {
         $res = $this->getNetwork();
         if($res === false){
             return false;
@@ -997,7 +1061,8 @@ class PhpGlances
             }
         }
     }
-    public function network_getTX($piIdx){
+    public function network_getTX($piIdx)
+    {
         $res = $this->getNetwork();
         if($res === false){
             return false;
@@ -1010,21 +1075,24 @@ class PhpGlances
         }
     }
 
-    public function getNow(){
+    public function getNow()
+    {
         return $this->_api('getNow');
     }
 
-    private function getProcessCount(){
+    private function getProcessCount()
+    {
         if($this->_useCache){
             if(!isset($this->_arrCache['getProcessCount'])){
-                $this->_arrCache['getProcessCount'] = $this->fn_json_decode($this->_api('getProcessCount'), true);
+                $this->_arrCache['getProcessCount'] = $this->fnJsonDecode($this->_api('getProcessCount'), true);
             }
             return $this->_arrCache['getProcessCount'];
         } else {
-            return $this->fn_json_decode($this->_api('getProcessCount'), true);
+            return $this->fnJsonDecode($this->_api('getProcessCount'), true);
         }
     }
-    public function processcount_getZombie(){
+    public function processcount_getZombie()
+    {
         $res = $this->getProcessCount();
         if($res === false){
             return false;
@@ -1036,7 +1104,8 @@ class PhpGlances
             }
         }
     }
-    public function processcount_getRunning(){
+    public function processcount_getRunning()
+    {
         $res = $this->getProcessCount();
         if($res === false){
             return false;
@@ -1048,7 +1117,8 @@ class PhpGlances
             }
         }
     }
-    public function processcount_getTotal(){
+    public function processcount_getTotal()
+    {
         $res = $this->getProcessCount();
         if($res === false){
             return false;
@@ -1060,7 +1130,8 @@ class PhpGlances
             }
         }
     }
-    public function processcount_getSleeping(){
+    public function processcount_getSleeping()
+    {
         $res = $this->getProcessCount();
         if($res === false){
             return false;
@@ -1073,17 +1144,19 @@ class PhpGlances
         }
     }
 
-    private function getProcessList(){
+    private function getProcessList()
+    {
         if($this->_useCache){
             if(!isset($this->_arrCache['getProcessList'])){
-                $this->_arrCache['getProcessList'] = $this->fn_json_decode($this->_api('getProcessList'), true);
+                $this->_arrCache['getProcessList'] = $this->fnJsonDecode($this->_api('getProcessList'), true);
             }
             return $this->_arrCache['getProcessList'];
         } else {
-            return $this->fn_json_decode($this->_api('getProcessList'), true);
+            return $this->fnJsonDecode($this->_api('getProcessList'), true);
         }
     }
-    public function processlist_getCount(){
+    public function processlist_getCount()
+    {
         $res = $this->getProcessList();
         if($res === false){
             return false;
@@ -1091,7 +1164,8 @@ class PhpGlances
             return count($res);
         }
     }
-    public function processlist_getUserName($piIdx){
+    public function processlist_getUserName($piIdx)
+    {
         $res = $this->getProcessList();
         if($res === false){
             return false;
@@ -1103,7 +1177,8 @@ class PhpGlances
             }
         }
     }
-    public function processlist_getStatus($piIdx){
+    public function processlist_getStatus($piIdx)
+    {
         $res = $this->getProcessList();
         if($res === false){
             return false;
@@ -1115,7 +1190,8 @@ class PhpGlances
             }
         }
     }
-    public function processlist_getCpuTimes($piIdx){
+    public function processlist_getCpuTimes($piIdx)
+    {
         $res = $this->getProcessList();
         if($res === false){
             return false;
@@ -1127,7 +1203,8 @@ class PhpGlances
             }
         }
     }
-    public function processlist_getName($piIdx){
+    public function processlist_getName($piIdx)
+    {
         $res = $this->getProcessList();
         if($res === false){
             return false;
@@ -1139,7 +1216,8 @@ class PhpGlances
             }
         }
     }
-    public function processlist_getMemoryPercent($piIdx){
+    public function processlist_getMemoryPercent($piIdx)
+    {
         $res = $this->getProcessList();
         if($res === false){
             return false;
@@ -1151,7 +1229,8 @@ class PhpGlances
             }
         }
     }
-    public function processlist_getCpuPercent($piIdx){
+    public function processlist_getCpuPercent($piIdx)
+    {
         $res = $this->getProcessList();
         if($res === false){
             return false;
@@ -1163,7 +1242,8 @@ class PhpGlances
             }
         }
     }
-    public function processlist_getPid($piIdx){
+    public function processlist_getPid($piIdx)
+    {
         $res = $this->getProcessList();
         if($res === false){
             return false;
@@ -1175,7 +1255,8 @@ class PhpGlances
             }
         }
     }
-    public function processlist_getIOCounters($piIdx){
+    public function processlist_getIOCounters($piIdx)
+    {
         $res = $this->getProcessList();
         if($res === false){
             return false;
@@ -1187,7 +1268,8 @@ class PhpGlances
             }
         }
     }
-    public function processlist_getCommandLine($piIdx){
+    public function processlist_getCommandLine($piIdx)
+    {
         $res = $this->getProcessList();
         if($res === false){
             return false;
@@ -1199,7 +1281,8 @@ class PhpGlances
             }
         }
     }
-    public function processlist_getMemoryInfo($piIdx){
+    public function processlist_getMemoryInfo($piIdx)
+    {
         $res = $this->getProcessList();
         if($res === false){
             return false;
@@ -1211,7 +1294,8 @@ class PhpGlances
             }
         }
     }
-    public function processlist_getNice($piIdx){
+    public function processlist_getNice($piIdx)
+    {
         $res = $this->getProcessList();
         if($res === false){
             return false;
@@ -1224,17 +1308,19 @@ class PhpGlances
         }
     }
 
-    private function getSensors(){
+    private function getSensors()
+    {
         if($this->_useCache){
             if(!isset($this->_arrCache['getSensors'])){
-                $this->_arrCache['getSensors'] = $this->fn_json_decode($this->_api('getSensors'), true);
+                $this->_arrCache['getSensors'] = $this->fnJsonDecode($this->_api('getSensors'), true);
             }
             return $this->_arrCache['getSensors'];
         } else {
-            return $this->fn_json_decode($this->_api('getSensors'), true);
+            return $this->fnJsonDecode($this->_api('getSensors'), true);
         }
     }
-    public function sensors_getCount(){
+    public function sensors_getCount()
+    {
         $res = $this->getSensors();
         if($res === false){
             return false;
@@ -1242,7 +1328,8 @@ class PhpGlances
             return count($res);
         }
     }
-    public function sensors_getValue($piIdx){
+    public function sensors_getValue($piIdx)
+    {
         $res = $this->getSensors();
         if($res === false){
             return false;
@@ -1254,7 +1341,8 @@ class PhpGlances
             }
         }
     }
-    public function sensors_getLabel($piIdx){
+    public function sensors_getLabel($piIdx)
+    {
         $res = $this->getSensors();
         if($res === false){
             return false;
@@ -1267,17 +1355,19 @@ class PhpGlances
         }
     }
 
-    private function getSystem(){
+    private function getSystem()
+    {
         if($this->_useCache){
             if(!isset($this->_arrCache['getSystem'])){
-                $this->_arrCache['getSystem'] = $this->fn_json_decode($this->_api('getSystem'), true);
+                $this->_arrCache['getSystem'] = $this->fnJsonDecode($this->_api('getSystem'), true);
             }
             return $this->_arrCache['getSystem'];
         } else {
-            return $this->fn_json_decode($this->_api('getSystem'), true);
+            return $this->fnJsonDecode($this->_api('getSystem'), true);
         }
     }
-    public function system_getLinuxDistro(){
+    public function system_getLinuxDistro()
+    {
         $res = $this->getSystem();
         if($res === false){
             return false;
@@ -1289,7 +1379,8 @@ class PhpGlances
             }
         }
     }
-    public function system_getPlatform(){
+    public function system_getPlatform()
+    {
         $res = $this->getSystem();
         if($res === false){
             return false;
@@ -1301,7 +1392,8 @@ class PhpGlances
             }
         }
     }
-    public function system_getOSName(){
+    public function system_getOSName()
+    {
         $res = $this->getSystem();
         if($res === false){
             return false;
@@ -1313,7 +1405,8 @@ class PhpGlances
             }
         }
     }
-    public function system_getHostname(){
+    public function system_getHostname()
+    {
         $res = $this->getSystem();
         if($res === false){
             return false;
@@ -1325,7 +1418,8 @@ class PhpGlances
             }
         }
     }
-    public function system_getOSVersion(){
+    public function system_getOSVersion()
+    {
         $res = $this->getSystem();
         if($res === false){
             return false;
