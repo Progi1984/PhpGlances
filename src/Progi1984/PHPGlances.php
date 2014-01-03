@@ -209,7 +209,7 @@ class PhpGlances
             // safety / validity test
             $t = preg_replace($matchString, '', $psString);
             $t = preg_replace('/[,:{}\[\]0-9.\-+Eaeflnr-u \n\r\t]/', '', $t);
-            if ($t != '') { 
+            if ($t != '') {
                 return null;
             }
 
@@ -228,14 +228,7 @@ class PhpGlances
 
             // convert JS notation to PHP notation
             $a = ($pbAssoc) ? '' : '(object) ';
-            $psString = strtr($psString, array(
-                ':' => '=>',
-                '[' => 'array(',
-                '{' => "{$a}array(",
-                ']' => ')',
-                '}' => ')'
-                )
-            );
+            $psString = strtr($psString, array(':' => '=>', '[' => 'array(', '{' => "{$a}array(", ']' => ')', '}' => ')'));
 
             // remove leading zeros to prevent incorrect type casting
             $psString = preg_replace('~([\s\(,>])(-?)0~', '$1$2', $psString);
@@ -287,8 +280,11 @@ class PhpGlances
             $oCtx = stream_context_create($params);
             $oStream = @fopen($this->url.':'.$this->port.'/RPC2', 'rb', false, $oCtx);
             if (!$oStream) {
-                if (isset($php_errormsg) && preg_match("/401/", $php_errormsg)) header("HTTP/1.1 401 Authentication failed");
-                else header("HTTP/1.1 403 Forbidden");
+                if (isset($php_errormsg) && preg_match("/401/", $php_errormsg)){
+                    header("HTTP/1.1 401 Authentication failed");  
+                } else {
+                    header("HTTP/1.1 403 Forbidden");
+                }
                 die();
             }
             $res = @stream_get_contents($oStream);
