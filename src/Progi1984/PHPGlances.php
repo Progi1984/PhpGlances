@@ -798,540 +798,540 @@
             }
         }
 
-    private function getMem(){
-      if($this->_useCache){
-        if(!isset($this->_arrCache['getMem'])){
-          $this->_arrCache['getMem'] = $this->fn_json_decode($this->_api('getMem'), true);
+        private function getMem(){
+            if($this->_useCache){
+                if(!isset($this->_arrCache['getMem'])){
+                    $this->_arrCache['getMem'] = $this->fn_json_decode($this->_api('getMem'), true);
+                }
+                return $this->_arrCache['getMem'];
+            } else {
+                return $this->fn_json_decode($this->_api('getMem'), true);
+            }
         }
-        return $this->_arrCache['getMem'];
-      } else {
-        return $this->fn_json_decode($this->_api('getMem'), true);
-      }
-    }
-    public function mem_getInactive(){
-      $res = $this->getMem();
-      if($res === false){
-        return false;
-      } else {
-        if(isset($res['inactive'])){
-          return $res['inactive'];
-        } else {
-          return 0;
+        public function mem_getInactive(){
+            $res = $this->getMem();
+            if($res === false){
+                return false;
+            } else {
+                if(isset($res['inactive'])){
+                    return $res['inactive'];
+                } else {
+                    return 0;
+                }
+            }
         }
-      }
-    }
-    public function mem_getCached(){
-      $res = $this->getMem();
-      if($res === false){
-        return false;
-      } else {
-        if(isset($res['cached'])){
-          return $res['cached'];
-        } else {
-          return 0;
+        public function mem_getCached(){
+            $res = $this->getMem();
+            if($res === false){
+                return false;
+            } else {
+                if(isset($res['cached'])){
+                    return $res['cached'];
+                } else {
+                    return 0;
+                }
+            }
         }
-      }
-    }
-    public function mem_getUsed(){
-      $res = $this->getMem();
-      if($res === false){
-        return false;
-      } else {
-        if(isset($res['used'])){
-          return $res['used'];
-        } else {
-          return 0;
+        public function mem_getUsed(){
+            $res = $this->getMem();
+            if($res === false){
+                return false;
+            } else {
+                if(isset($res['used'])){
+                    return $res['used'];
+                } else {
+                    return 0;
+                }
+            }
         }
-      }
-    }
-    public function mem_getBuffers(){
-      $res = $this->getMem();
-      if($res === false){
-        return false;
-      } else {
-        if(isset($res['buffers'])){
-          return $res['buffers'];
-        } else {
-          return 0;
+        public function mem_getBuffers(){
+            $res = $this->getMem();
+            if($res === false){
+                return false;
+            } else {
+                if(isset($res['buffers'])){
+                    return $res['buffers'];
+                } else {
+                    return 0;
+                }
+            }
         }
-      }
-    }
-    public function mem_getActive(){
-      $res = $this->getMem();
-      if($res === false){
-        return false;
-      } else {
-        if(isset($res['active'])){
-          return $res['active'];
-        } else {
-          return 0;
+        public function mem_getActive(){
+            $res = $this->getMem();
+            if($res === false){
+                return false;
+            } else {
+                if(isset($res['active'])){
+                    return $res['active'];
+                } else {
+                    return 0;
+                }
+            }
         }
-      }
-    }
-    public function mem_getTotal(){
-      $res = $this->getMem();
-      if($res === false){
-        return false;
-      } else {
-        if(isset($res['total'])){
-          return $res['total'];
-        } else {
-          return 0;
+        public function mem_getTotal(){
+            $res = $this->getMem();
+            if($res === false){
+                return false;
+            } else {
+                if(isset($res['total'])){
+                    return $res['total'];
+                } else {
+                    return 0;
+                }
+            }
         }
-      }
-    }
-    public function mem_getPercent(){
-    $res = $this->getMem();
-    if($res === false){
-      return false;
-    } else {
-      if(isset($res['percent'])){
-        return $res['percent'];
-      } else {
-        return 0;
-      }
-    }
-  }
-    public function mem_getFree(){
-      $res = $this->getMem();
-      if($res === false){
-        return false;
-      } else {
-        if(isset($res['free'])){
-          return $res['free'];
-        } else {
-          return 0;
+        public function mem_getPercent(){
+            $res = $this->getMem();
+            if($res === false){
+                return false;
+            } else {
+                if(isset($res['percent'])){
+                    return $res['percent'];
+                } else {
+                    return 0;
+                }
+            }
         }
-      }
-    }
+        public function mem_getFree(){
+            $res = $this->getMem();
+            if($res === false){
+                return false;
+            } else {
+                if(isset($res['free'])){
+                    return $res['free'];
+                } else {
+                    return 0;
+                }
+            }
+        }
 
-    private function getMemSwap(){
-      if($this->_useCache){
-        if(!isset($this->_arrCache['getMemSwap'])){
-          $this->_arrCache['getMemSwap'] = $this->fn_json_decode($this->_api('getMemSwap'), true);
+        private function getMemSwap(){
+            if($this->_useCache){
+                if(!isset($this->_arrCache['getMemSwap'])){
+                    $this->_arrCache['getMemSwap'] = $this->fn_json_decode($this->_api('getMemSwap'), true);
+                }
+                return $this->_arrCache['getMemSwap'];
+            } else {
+                return $this->fn_json_decode($this->_api('getMemSwap'), true);
+            }
         }
-        return $this->_arrCache['getMemSwap'];
-      } else {
-        return $this->fn_json_decode($this->_api('getMemSwap'), true);
-      }
-    }
-    public function memswap_getTotal(){
-      $res = $this->getMemSwap();
-      if($res === false){
-        return false;
-      } else {
-        if(isset($res['total'])){
-          return $res['total'];
-        } else {
-          return 0;
+        public function memswap_getTotal(){
+            $res = $this->getMemSwap();
+            if($res === false){
+                return false;
+            } else {
+                if(isset($res['total'])){
+                    return $res['total'];
+                } else {
+                    return 0;
+                }
+            }
         }
-      }
-    }
-    public function memswap_getPercent(){
-      $res = $this->getMemSwap();
-      if($res === false){
-        return false;
-      } else {
-        if(isset($res['percent'])){
-          return $res['percent'];
-        } else {
-          return 0;
+        public function memswap_getPercent(){
+            $res = $this->getMemSwap();
+            if($res === false){
+                return false;
+            } else {
+                if(isset($res['percent'])){
+                    return $res['percent'];
+                } else {
+                    return 0;
+                }
+            }
         }
-      }
-    }
-    public function memswap_getUsed(){
-      $res = $this->getMemSwap();
-      if($res === false){
-        return false;
-      } else {
-        if(isset($res['used'])){
-          return $res['used'];
-        } else {
-          return 0;
+        public function memswap_getUsed(){
+            $res = $this->getMemSwap();
+            if($res === false){
+                return false;
+            } else {
+                if(isset($res['used'])){
+                    return $res['used'];
+                } else {
+                    return 0;
+                }
+            }
         }
-      }
-    }
 
-    private function getNetwork(){
-      if($this->_useCache){
-        if(!isset($this->_arrCache['getNetwork'])){
-          $this->_arrCache['getNetwork'] = $this->fn_json_decode($this->_api('getNetwork'), true);
+        private function getNetwork(){
+            if($this->_useCache){
+                if(!isset($this->_arrCache['getNetwork'])){
+                    $this->_arrCache['getNetwork'] = $this->fn_json_decode($this->_api('getNetwork'), true);
+                }
+                return $this->_arrCache['getNetwork'];
+            } else {
+                return $this->fn_json_decode($this->_api('getNetwork'), true);
+            }
         }
-        return $this->_arrCache['getNetwork'];
-      } else {
-        return $this->fn_json_decode($this->_api('getNetwork'), true);
-      }
-    }
-    public function network_getCount(){
-      $res = $this->getNetwork();
-      if($res === false){
-        return false;
-      } else {
-        return count($res);
-      }
-    }
-    public function network_getInterfaceName($piIdx){
-      $res = $this->getNetwork();
-      if($res === false){
-        return false;
-      } else {
-        if(isset($res[$piIdx]['interface_name'])){
-          return $res[$piIdx]['interface_name'];
-        } else {
-          return '';
+        public function network_getCount(){
+            $res = $this->getNetwork();
+            if($res === false){
+                return false;
+            } else {
+                return count($res);
+            }
         }
-      }
-    }
-    public function network_getRX($piIdx){
-      $res = $this->getNetwork();
-      if($res === false){
-        return false;
-      } else {
-        if(isset($res[$piIdx]['rx'])){
-          return $res[$piIdx]['rx'];
-        } else {
-          return '';
+        public function network_getInterfaceName($piIdx){
+            $res = $this->getNetwork();
+            if($res === false){
+                return false;
+            } else {
+                if(isset($res[$piIdx]['interface_name'])){
+                    return $res[$piIdx]['interface_name'];
+                } else {
+                    return '';
+                }
+            }
         }
-      }
-    }
-    public function network_getTX($piIdx){
-      $res = $this->getNetwork();
-      if($res === false){
-        return false;
-      } else {
-        if(isset($res[$piIdx]['tx'])){
-          return $res[$piIdx]['tx'];
-        } else {
-          return '';
+        public function network_getRX($piIdx){
+            $res = $this->getNetwork();
+            if($res === false){
+                return false;
+            } else {
+                if(isset($res[$piIdx]['rx'])){
+                    return $res[$piIdx]['rx'];
+                } else {
+                    return '';
+                }
+            }
         }
-      }
-    }
+        public function network_getTX($piIdx){
+            $res = $this->getNetwork();
+            if($res === false){
+                return false;
+            } else {
+                if(isset($res[$piIdx]['tx'])){
+                    return $res[$piIdx]['tx'];
+                } else {
+                    return '';
+                }
+            }
+        }
 
-    public function getNow(){
-      return $this->_api('getNow');
-    }
+        public function getNow(){
+            return $this->_api('getNow');
+        }
 
-    private function getProcessCount(){
-      if($this->_useCache){
-        if(!isset($this->_arrCache['getProcessCount'])){
-          $this->_arrCache['getProcessCount'] = $this->fn_json_decode($this->_api('getProcessCount'), true);
+        private function getProcessCount(){
+            if($this->_useCache){
+                if(!isset($this->_arrCache['getProcessCount'])){
+                    $this->_arrCache['getProcessCount'] = $this->fn_json_decode($this->_api('getProcessCount'), true);
+                }
+                return $this->_arrCache['getProcessCount'];
+            } else {
+                return $this->fn_json_decode($this->_api('getProcessCount'), true);
+            }
         }
-        return $this->_arrCache['getProcessCount'];
-      } else {
-        return $this->fn_json_decode($this->_api('getProcessCount'), true);
-      }
-    }
-    public function processcount_getZombie(){
-      $res = $this->getProcessCount();
-      if($res === false){
-        return false;
-      } else {
-        if(isset($res['zombie'])){
-          return $res['zombie'];
-        } else {
-          return 0;
+        public function processcount_getZombie(){
+            $res = $this->getProcessCount();
+            if($res === false){
+                return false;
+            } else {
+                if(isset($res['zombie'])){
+                    return $res['zombie'];
+                } else {
+                    return 0;
+                }
+            }
         }
-      }
-    }
-    public function processcount_getRunning(){
-      $res = $this->getProcessCount();
-      if($res === false){
-        return false;
-      } else {
-        if(isset($res['running'])){
-          return $res['running'];
-        } else {
-          return 0;
+        public function processcount_getRunning(){
+            $res = $this->getProcessCount();
+            if($res === false){
+                return false;
+            } else {
+                if(isset($res['running'])){
+                    return $res['running'];
+                } else {
+                    return 0;
+                }
+            }
         }
-      }
-    }
-    public function processcount_getTotal(){
-      $res = $this->getProcessCount();
-      if($res === false){
-        return false;
-      } else {
-        if(isset($res['total'])){
-          return $res['total'];
-        } else {
-          return 0;
+        public function processcount_getTotal(){
+            $res = $this->getProcessCount();
+            if($res === false){
+                return false;
+            } else {
+                if(isset($res['total'])){
+                    return $res['total'];
+                } else {
+                    return 0;
+                }
+            }
         }
-      }
-    }
-    public function processcount_getSleeping(){
-      $res = $this->getProcessCount();
-      if($res === false){
-        return false;
-      } else {
-        if(isset($res['sleeping'])){
-          return $res['sleeping'];
-        } else {
-          return 0;
+        public function processcount_getSleeping(){
+            $res = $this->getProcessCount();
+            if($res === false){
+                return false;
+            } else {
+                if(isset($res['sleeping'])){
+                    return $res['sleeping'];
+                } else {
+                    return 0;
+                }
+            }
         }
-      }
-    }
 
-    private function getProcessList(){
-      if($this->_useCache){
-        if(!isset($this->_arrCache['getProcessList'])){
-          $this->_arrCache['getProcessList'] = $this->fn_json_decode($this->_api('getProcessList'), true);
+        private function getProcessList(){
+            if($this->_useCache){
+                if(!isset($this->_arrCache['getProcessList'])){
+                    $this->_arrCache['getProcessList'] = $this->fn_json_decode($this->_api('getProcessList'), true);
+                }
+                return $this->_arrCache['getProcessList'];
+            } else {
+                return $this->fn_json_decode($this->_api('getProcessList'), true);
+            }
         }
-        return $this->_arrCache['getProcessList'];
-      } else {
-        return $this->fn_json_decode($this->_api('getProcessList'), true);
-      }
-    }
-    public function processlist_getCount(){
-      $res = $this->getProcessList();
-      if($res === false){
-        return false;
-      } else {
-        return count($res);
-      }
-    }
-    public function processlist_getUserName($piIdx){
-      $res = $this->getProcessList();
-      if($res === false){
-        return false;
-      } else {
-        if(isset($res[$piIdx]['username'])){
-          return $res[$piIdx]['username'];
-        } else {
-          return '';
+        public function processlist_getCount(){
+            $res = $this->getProcessList();
+            if($res === false){
+                return false;
+            } else {
+                return count($res);
+            }
         }
-      }
-    }
-    public function processlist_getStatus($piIdx){
-      $res = $this->getProcessList();
-      if($res === false){
-        return false;
-      } else {
-        if(isset($res[$piIdx]['status'])){
-          return $res[$piIdx]['status'];
-        } else {
-          return '';
+        public function processlist_getUserName($piIdx){
+            $res = $this->getProcessList();
+            if($res === false){
+                return false;
+            } else {
+                if(isset($res[$piIdx]['username'])){
+                    return $res[$piIdx]['username'];
+                } else {
+                    return '';
+                }
+            }
         }
-      }
-    }
-    public function processlist_getCpuTimes($piIdx){
-      $res = $this->getProcessList();
-      if($res === false){
-        return false;
-      } else {
-        if(isset($res[$piIdx]['cpu_times'])){
-          return $res[$piIdx]['cpu_times'];
-        } else {
-          return array();
+        public function processlist_getStatus($piIdx){
+            $res = $this->getProcessList();
+            if($res === false){
+                return false;
+            } else {
+                if(isset($res[$piIdx]['status'])){
+                    return $res[$piIdx]['status'];
+                } else {
+                    return '';
+                }
+            }
         }
-      }
-    }
-    public function processlist_getName($piIdx){
-      $res = $this->getProcessList();
-      if($res === false){
-        return false;
-      } else {
-        if(isset($res[$piIdx]['name'])){
-          return $res[$piIdx]['name'];
-        } else {
-          return '';
+        public function processlist_getCpuTimes($piIdx){
+            $res = $this->getProcessList();
+            if($res === false){
+                return false;
+            } else {
+                if(isset($res[$piIdx]['cpu_times'])){
+                    return $res[$piIdx]['cpu_times'];
+                } else {
+                    return array();
+                }
+            }
         }
-      }
-    }
-    public function processlist_getMemoryPercent($piIdx){
-      $res = $this->getProcessList();
-      if($res === false){
-        return false;
-      } else {
-        if(isset($res[$piIdx]['memory_percent'])){
-          return $res[$piIdx]['memory_percent'];
-        } else {
-          return 0;
+        public function processlist_getName($piIdx){
+            $res = $this->getProcessList();
+            if($res === false){
+                return false;
+            } else {
+                if(isset($res[$piIdx]['name'])){
+                    return $res[$piIdx]['name'];
+                } else {
+                    return '';
+                }
+            }
         }
-      }
-    }
-    public function processlist_getCpuPercent($piIdx){
-      $res = $this->getProcessList();
-      if($res === false){
-        return false;
-      } else {
-        if(isset($res[$piIdx]['cpu_percent'])){
-          return $res[$piIdx]['cpu_percent'];
-        } else {
-          return 0;
+        public function processlist_getMemoryPercent($piIdx){
+            $res = $this->getProcessList();
+            if($res === false){
+                return false;
+            } else {
+                if(isset($res[$piIdx]['memory_percent'])){
+                    return $res[$piIdx]['memory_percent'];
+                } else {
+                    return 0;
+                }
+            }
         }
-      }
-    }
-    public function processlist_getPid($piIdx){
-      $res = $this->getProcessList();
-      if($res === false){
-        return false;
-      } else {
-        if(isset($res[$piIdx]['pid'])){
-          return $res[$piIdx]['pid'];
-        } else {
-          return 0;
+        public function processlist_getCpuPercent($piIdx){
+            $res = $this->getProcessList();
+            if($res === false){
+                return false;
+            } else {
+                if(isset($res[$piIdx]['cpu_percent'])){
+                    return $res[$piIdx]['cpu_percent'];
+                } else {
+                    return 0;
+                }
+            }
         }
-      }
-    }
-    public function processlist_getIOCounters($piIdx){
-      $res = $this->getProcessList();
-      if($res === false){
-        return false;
-      } else {
-        if(isset($res[$piIdx]['io_counters'])){
-          return $res[$piIdx]['io_counters'];
-        } else {
-          return array();
+        public function processlist_getPid($piIdx){
+            $res = $this->getProcessList();
+            if($res === false){
+                return false;
+            } else {
+                if(isset($res[$piIdx]['pid'])){
+                    return $res[$piIdx]['pid'];
+                } else {
+                    return 0;
+                }
+            }
         }
-      }
-    }
-    public function processlist_getCommandLine($piIdx){
-      $res = $this->getProcessList();
-      if($res === false){
-        return false;
-      } else {
-        if(isset($res[$piIdx]['cmdline'])){
-          return $res[$piIdx]['cmdline'];
-        } else {
-          return '';
+        public function processlist_getIOCounters($piIdx){
+            $res = $this->getProcessList();
+            if($res === false){
+                return false;
+            } else {
+                if(isset($res[$piIdx]['io_counters'])){
+                    return $res[$piIdx]['io_counters'];
+                } else {
+                    return array();
+                }
+            }
         }
-      }
-    }
-    public function processlist_getMemoryInfo($piIdx){
-      $res = $this->getProcessList();
-      if($res === false){
-        return false;
-      } else {
-        if(isset($res[$piIdx]['memory_info'])){
-          return $res[$piIdx]['memory_info'];
-        } else {
-          return array();
+        public function processlist_getCommandLine($piIdx){
+            $res = $this->getProcessList();
+            if($res === false){
+                return false;
+            } else {
+                if(isset($res[$piIdx]['cmdline'])){
+                    return $res[$piIdx]['cmdline'];
+                } else {
+                    return '';
+                }
+            }
         }
-      }
-    }
-    public function processlist_getNice($piIdx){
-      $res = $this->getProcessList();
-      if($res === false){
-        return false;
-      } else {
-        if(isset($res[$piIdx]['nice'])){
-          return $res[$piIdx]['nice'];
-        } else {
-          return 0;
+        public function processlist_getMemoryInfo($piIdx){
+            $res = $this->getProcessList();
+            if($res === false){
+                return false;
+            } else {
+                if(isset($res[$piIdx]['memory_info'])){
+                    return $res[$piIdx]['memory_info'];
+                } else {
+                    return array();
+                }
+            }
         }
-      }
-    }
+        public function processlist_getNice($piIdx){
+            $res = $this->getProcessList();
+            if($res === false){
+                return false;
+            } else {
+                if(isset($res[$piIdx]['nice'])){
+                    return $res[$piIdx]['nice'];
+                } else {
+                    return 0;
+                }
+            }
+        }
 
-    private function getSensors(){
-      if($this->_useCache){
-        if(!isset($this->_arrCache['getSensors'])){
-          $this->_arrCache['getSensors'] = $this->fn_json_decode($this->_api('getSensors'), true);
+        private function getSensors(){
+            if($this->_useCache){
+                if(!isset($this->_arrCache['getSensors'])){
+                    $this->_arrCache['getSensors'] = $this->fn_json_decode($this->_api('getSensors'), true);
+                }
+                return $this->_arrCache['getSensors'];
+            } else {
+                return $this->fn_json_decode($this->_api('getSensors'), true);
+            }
         }
-        return $this->_arrCache['getSensors'];
-      } else {
-        return $this->fn_json_decode($this->_api('getSensors'), true);
-      }
-    }
-    public function sensors_getCount(){
-      $res = $this->getSensors();
-      if($res === false){
-        return false;
-      } else {
-        return count($res);
-      }
-    }
-    public function sensors_getValue($piIdx){
-      $res = $this->getSensors();
-      if($res === false){
-        return false;
-      } else {
-        if(isset($res[$piIdx]['value'])){
-          return $res[$piIdx]['value'];
-        } else {
-          return '';
+        public function sensors_getCount(){
+            $res = $this->getSensors();
+            if($res === false){
+                return false;
+            } else {
+                return count($res);
+            }
         }
-      }
-    }
-    public function sensors_getLabel($piIdx){
-      $res = $this->getSensors();
-      if($res === false){
-        return false;
-      } else {
-        if(isset($res[$piIdx]['label'])){
-          return $res[$piIdx]['label'];
-        } else {
-          return '';
+        public function sensors_getValue($piIdx){
+            $res = $this->getSensors();
+            if($res === false){
+                return false;
+            } else {
+                if(isset($res[$piIdx]['value'])){
+                    return $res[$piIdx]['value'];
+                } else {
+                    return '';
+                }
+            }
         }
-      }
-    }
+        public function sensors_getLabel($piIdx){
+            $res = $this->getSensors();
+            if($res === false){
+                return false;
+            } else {
+                if(isset($res[$piIdx]['label'])){
+                    return $res[$piIdx]['label'];
+                } else {
+                    return '';
+                }
+            }
+        }
 
-    private function getSystem(){
-      if($this->_useCache){
-        if(!isset($this->_arrCache['getSystem'])){
-          $this->_arrCache['getSystem'] = $this->fn_json_decode($this->_api('getSystem'), true);
+        private function getSystem(){
+            if($this->_useCache){
+                if(!isset($this->_arrCache['getSystem'])){
+                    $this->_arrCache['getSystem'] = $this->fn_json_decode($this->_api('getSystem'), true);
+                }
+                return $this->_arrCache['getSystem'];
+            } else {
+                return $this->fn_json_decode($this->_api('getSystem'), true);
+            }
         }
-        return $this->_arrCache['getSystem'];
-      } else {
-        return $this->fn_json_decode($this->_api('getSystem'), true);
-      }
-    }
-    public function system_getLinuxDistro(){
-      $res = $this->getSystem();
-      if($res === false){
-        return false;
-      } else {
-        if(isset($res['linux_distro'])){
-          return $res['linux_distro'];
-        } else {
-          return '';
+        public function system_getLinuxDistro(){
+            $res = $this->getSystem();
+            if($res === false){
+                return false;
+            } else {
+                if(isset($res['linux_distro'])){
+                    return $res['linux_distro'];
+                } else {
+                    return '';
+                }
+            }
         }
-      }
-    }
-    public function system_getPlatform(){
-      $res = $this->getSystem();
-      if($res === false){
-        return false;
-      } else {
-        if(isset($res['platform'])){
-          return $res['platform'];
-        } else {
-          return '';
+        public function system_getPlatform(){
+            $res = $this->getSystem();
+            if($res === false){
+                return false;
+            } else {
+                if(isset($res['platform'])){
+                    return $res['platform'];
+                } else {
+                    return '';
+                }
+            }
         }
-      }
-    }
-    public function system_getOSName(){
-      $res = $this->getSystem();
-      if($res === false){
-        return false;
-      } else {
-        if(isset($res['os_name'])){
-          return $res['os_name'];
-        } else {
-          return '';
+        public function system_getOSName(){
+            $res = $this->getSystem();
+            if($res === false){
+                return false;
+            } else {
+                if(isset($res['os_name'])){
+                    return $res['os_name'];
+                } else {
+                    return '';
+                }
+            }
         }
-      }
-    }
-    public function system_getHostname(){
-      $res = $this->getSystem();
-      if($res === false){
-        return false;
-      } else {
-        if(isset($res['hostname'])){
-          return $res['hostname'];
-        } else {
-          return '';
+        public function system_getHostname(){
+            $res = $this->getSystem();
+            if($res === false){
+                return false;
+            } else {
+                if(isset($res['hostname'])){
+                    return $res['hostname'];
+                } else {
+                    return '';
+                }
+            }
         }
-      }
-    }
-    public function system_getOSVersion(){
-      $res = $this->getSystem();
-      if($res === false){
-        return false;
-      } else {
-        if(isset($res['os_version'])){
-          return $res['os_version'];
-        } else {
-          return '';
+        public function system_getOSVersion(){
+            $res = $this->getSystem();
+            if($res === false){
+                return false;
+            } else {
+                if(isset($res['os_version'])){
+                    return $res['os_version'];
+                } else {
+                    return '';
+                }
+            }
         }
-      }
     }
-  }
