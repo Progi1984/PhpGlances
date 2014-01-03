@@ -384,6 +384,18 @@ class PhpGlances
     {
         return $this->api('system.listMethods');
     }
+    
+    public function __call($sName, $arrArguments){
+        if (empty($this->cacheMethods)) {
+            $this->cacheMethods = $this->listMethods();
+        }
+        if (in_array($sName ,$this->cacheMethods)) {
+            // Methode Glances
+            return $this->api($sName);
+        } else {
+            // Acces aux Proprietes des Methodes
+        }
+    }
 
     public function getCore()
     {
