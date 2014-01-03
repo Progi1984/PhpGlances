@@ -71,20 +71,18 @@ class PhpGlances
         } else {
             if ($this->extPHPSimpleXML == true) {
                 $oXML = simplexml_load_string($psString);
-                // Array
                 if (isset($oXML->params->param->value->array)) {
+                    // Array
                     $arrReturn = array();
                     foreach ($oXML->params->param->value->array->data->value as $item) {
                         $arrReturn[] = (string)$item->string;
                     }
                     return $arrReturn;
-                }
-                // String
-                elseif (isset($oXML->params->param->value->string)) {
+                } elseif (isset($oXML->params->param->value->string)) {
+                    // String
                     return (string) $oXML->params->param->value->string;
-                }
-                // Error
-                elseif (isset($oXML->fault->value->struct->member->name)) {
+                } elseif (isset($oXML->fault->value->struct->member->name)) {
+                    // Error
                     $arrReturn = array();
                     foreach ($oXML->fault->value->struct->member as $item) {
                         if (isset($item->name) && $item->name == 'faultCode') {
@@ -101,20 +99,18 @@ class PhpGlances
                 $oXML = new DOMDocument();
                 $oXML->loadXML($psString);
                 $arrXML = $this->fnXmlConvert($oXML->documentElement);
-                // Array
                 if (isset($arrXML['params']['param']['value']['array'])) {
+                    // Array
                     $arrReturn = array();
                     foreach ($arrXML['params']['param']['value']['array']['data']['value'] as $item) {
                         $arrReturn[] = (string)$item['string'];
                     }
                     return $arrReturn;
-                }
-                // String
-                elseif (isset($arrXML['params']['param']['value']['string'])) {
+                } elseif (isset($arrXML['params']['param']['value']['string'])) {
+                    // String
                     return (string) $arrXML['params']['param']['value']['string'];
-                }
-                // Error
-                elseif (isset($arrXML['fault']['value']['struct']['member']['name'])) {
+                } elseif (isset($arrXML['fault']['value']['struct']['member']['name'])) {
+                    // Error
                     $arrReturn = array();
                     foreach ($arrXML['fault']['value']['struct']['member'] as $item) {
                         if (isset($item['name']) && $item['name'] == 'faultCode') {
@@ -211,26 +207,28 @@ class PhpGlances
             $matchString = '/".*?(?<!\\\\)"/';
 
             // safety / validity test
-            $t = preg_replace( $matchString, '', $psString );
-            $t = preg_replace( '/[,:{}\[\]0-9.\-+Eaeflnr-u \n\r\t]/', '', $t );
-            if ($t != '') { return null; }
+            $t = preg_replace($matchString, '', $psString);
+            $t = preg_replace('/[,:{}\[\]0-9.\-+Eaeflnr-u \n\r\t]/', '', $t);
+            if ($t != '') { 
+                return null;
+            }
 
             // build to/from hashes for all strings in the structure
             $s2m = array();
             $m2s = array();
-            preg_match_all( $matchString, $psString, $m );
+            preg_match_all($matchString, $psString, $m);
             foreach ($m[0] as $s) {
-                $hash       = '"' . md5( $s ) . '"';
+                $hash       = '"' . md5($s) . '"';
                 $s2m[$s]    = $hash;
-                $m2s[$hash] = str_replace( '$', '\$', $s );  // prevent $ magic
+                $m2s[$hash] = str_replace('$', '\$', $s);  // prevent $ magic
             }
 
             // hide the strings
-            $psString = strtr( $psString, $s2m );
+            $psString = strtr($psString, $s2m);
 
             // convert JS notation to PHP notation
             $a = ($pbAssoc) ? '' : '(object) ';
-            $psString = strtr( $psString, array(
+            $psString = strtr($psString, array(
                 ':' => '=>',
                 '[' => 'array(',
                 '{' => "{$a}array(",
@@ -240,26 +238,28 @@ class PhpGlances
             );
 
             // remove leading zeros to prevent incorrect type casting
-            $psString = preg_replace( '~([\s\(,>])(-?)0~', '$1$2', $psString );
+            $psString = preg_replace('~([\s\(,>])(-?)0~', '$1$2', $psString);
 
             // return the strings
-            $psString = strtr( $psString, $m2s );
+            $psString = strtr($psString, $m2s);
 
             /* "eval" string and return results.
                As there is no try statement in PHP4, the trick here
                 is to suppress any parser errors while a function is
                 built and then run the function if it got made. */
-            $f = @create_function( '', "return {$psString};" );
+            $f = @create_function('', "return {$psString};");
             $r = ($f) ? $f() : null;
 
             // free mem (shouldn't really be needed, but it's polite)
-            unset( $s2m ); unset( $m2s ); unset( $f );
+            unset($s2m);
+            unset($m2s);
+            unset($f);
 
             return $r;
         }
     }
 
-    private function _api($psMethod)
+    private function api($psMethod)
     {
         if ($this->extPHPCurl == true) {
             curl_setopt($this->oCurl, CURLOPT_HEADER, false);
@@ -385,23 +385,23 @@ class PhpGlances
      */
     public function listMethods()
     {
-        return $this->_api('system.listMethods');
+        return $this->api('system.listMethods');
     }
 
     public function getCore()
     {
-        return $this->_api('getCore');
+        return $this->api('getCore');
     }
 
     private function getCpu()
     {
         if ($this->useCache) {
             if (!isset($this->arrCache['getCpu'])) {
-                $this->arrCache['getCpu'] = $this->fnJsonDecode($this->_api('getCpu'), true);
+                $this->arrCache['getCpu'] = $this->fnJsonDecode($this->api('getCpu'), true);
             }
             return $this->arrCache['getCpu'];
         } else {
-            return $this->fnJsonDecode($this->_api('getCpu'), true);
+            return $this->fnJsonDecode($this->api('getCpu'), true);
         }
     }
     public function cpu_getIOWait()
@@ -487,11 +487,11 @@ class PhpGlances
     {
         if ($this->useCache) {
             if (!isset($this->arrCache['getDiskIO'])) {
-                $this->arrCachearrCache['getDiskIO'] = $this->fnJsonDecode($this->_api('getDiskIO'), true);
+                $this->arrCachearrCache['getDiskIO'] = $this->fnJsonDecode($this->api('getDiskIO'), true);
             }
             return $this->arrCache['getDiskIO'];
         } else {
-            return $this->fnJsonDecode($this->_api('getDiskIO'), true);
+            return $this->fnJsonDecode($this->api('getDiskIO'), true);
         }
     }
     public function diskIO_getCount()
@@ -512,7 +512,7 @@ class PhpGlances
             if (isset($res[$piIdx]['disk_name'])) {
                 return $res[$piIdx]['disk_name'];
             } else {
-               return '';
+                return '';
             }
         }
     }
@@ -547,11 +547,11 @@ class PhpGlances
     {
         if ($this->useCache) {
             if (!isset($this->arrCache['getFs'])) {
-                $this->arrCache['getFs'] = $this->fnJsonDecode($this->_api('getFs'), true);
+                $this->arrCache['getFs'] = $this->fnJsonDecode($this->api('getFs'), true);
             }
             return $this->arrCache['getFs'];
         } else {
-            return $this->fnJsonDecode($this->_api('getFs'), true);
+            return $this->fnJsonDecode($this->api('getFs'), true);
         }
     }
     public function fs_getCount()
@@ -646,11 +646,11 @@ class PhpGlances
     {
         if ($this->useCache) {
             if (!isset($this->arrCache['getLoad'])) {
-                $this->arrCache['getLoad'] = $this->fnJsonDecode($this->_api('getLoad'), true);
+                $this->arrCache['getLoad'] = $this->fnJsonDecode($this->api('getLoad'), true);
             }
             return $this->arrCache['getLoad'];
         } else {
-            return $this->fnJsonDecode($this->_api('getLoad'), true);
+            return $this->fnJsonDecode($this->api('getLoad'), true);
         }
     }
     public function load_getMin1()
@@ -697,11 +697,11 @@ class PhpGlances
     {
         if ($this->useCache) {
             if (!isset($this->arrCache['getAllLimits'])) {
-                $this->arrCache['getAllLimits'] = $this->fnJsonDecode($this->_api('getAllLimits'), true);
+                $this->arrCache['getAllLimits'] = $this->fnJsonDecode($this->api('getAllLimits'), true);
             }
             return $this->arrCache['getAllLimits'];
         } else {
-            return $this->fnJsonDecode($this->_api('getAllLimits'), true);
+            return $this->fnJsonDecode($this->api('getAllLimits'), true);
         }
     }
     public function limit_getSTD()
@@ -728,7 +728,7 @@ class PhpGlances
             } else {
                 return 0;
             }
-      }
+        }
     }
     public function limit_getFS()
     {
@@ -852,11 +852,11 @@ class PhpGlances
     {
         if ($this->useCache) {
             if (!isset($this->arrCache['getMem'])) {
-                $this->arrCache['getMem'] = $this->fnJsonDecode($this->_api('getMem'), true);
+                $this->arrCache['getMem'] = $this->fnJsonDecode($this->api('getMem'), true);
             }
             return $this->arrCache['getMem'];
         } else {
-            return $this->fnJsonDecode($this->_api('getMem'), true);
+            return $this->fnJsonDecode($this->api('getMem'), true);
         }
     }
     public function mem_getInactive()
@@ -968,11 +968,11 @@ class PhpGlances
     {
         if ($this->useCache) {
             if (!isset($this->arrCache['getMemSwap'])) {
-                $this->arrCache['getMemSwap'] = $this->fnJsonDecode($this->_api('getMemSwap'), true);
+                $this->arrCache['getMemSwap'] = $this->fnJsonDecode($this->api('getMemSwap'), true);
             }
             return $this->arrCache['getMemSwap'];
         } else {
-            return $this->fnJsonDecode($this->_api('getMemSwap'), true);
+            return $this->fnJsonDecode($this->api('getMemSwap'), true);
         }
     }
     public function memswap_getTotal()
@@ -1019,11 +1019,11 @@ class PhpGlances
     {
         if ($this->useCache) {
             if (!isset($this->arrCache['getNetwork'])) {
-                $this->arrCache['getNetwork'] = $this->fnJsonDecode($this->_api('getNetwork'), true);
+                $this->arrCache['getNetwork'] = $this->fnJsonDecode($this->api('getNetwork'), true);
             }
             return $this->arrCache['getNetwork'];
         } else {
-            return $this->fnJsonDecode($this->_api('getNetwork'), true);
+            return $this->fnJsonDecode($this->api('getNetwork'), true);
         }
     }
     public function network_getCount()
@@ -1077,18 +1077,18 @@ class PhpGlances
 
     public function getNow()
     {
-        return $this->_api('getNow');
+        return $this->api('getNow');
     }
 
     private function getProcessCount()
     {
         if ($this->useCache) {
             if (!isset($this->arrCache['getProcessCount'])) {
-                $this->arrCache['getProcessCount'] = $this->fnJsonDecode($this->_api('getProcessCount'), true);
+                $this->arrCache['getProcessCount'] = $this->fnJsonDecode($this->api('getProcessCount'), true);
             }
             return $this->arrCache['getProcessCount'];
         } else {
-            return $this->fnJsonDecode($this->_api('getProcessCount'), true);
+            return $this->fnJsonDecode($this->api('getProcessCount'), true);
         }
     }
     public function processcount_getZombie()
@@ -1148,11 +1148,11 @@ class PhpGlances
     {
         if ($this->useCache) {
             if (!isset($this->arrCache['getProcessList'])) {
-                $this->arrCache['getProcessList'] = $this->fnJsonDecode($this->_api('getProcessList'), true);
+                $this->arrCache['getProcessList'] = $this->fnJsonDecode($this->api('getProcessList'), true);
             }
             return $this->arrCache['getProcessList'];
         } else {
-            return $this->fnJsonDecode($this->_api('getProcessList'), true);
+            return $this->fnJsonDecode($this->api('getProcessList'), true);
         }
     }
     public function processlist_getCount()
@@ -1312,11 +1312,11 @@ class PhpGlances
     {
         if ($this->useCache) {
             if (!isset($this->arrCache['getSensors'])) {
-                $this->arrCache['getSensors'] = $this->fnJsonDecode($this->_api('getSensors'), true);
+                $this->arrCache['getSensors'] = $this->fnJsonDecode($this->api('getSensors'), true);
             }
             return $this->arrCache['getSensors'];
         } else {
-            return $this->fnJsonDecode($this->_api('getSensors'), true);
+            return $this->fnJsonDecode($this->api('getSensors'), true);
         }
     }
     public function sensors_getCount()
@@ -1359,11 +1359,11 @@ class PhpGlances
     {
         if ($this->useCache) {
             if (!isset($this->arrCache['getSystem'])) {
-                $this->arrCache['getSystem'] = $this->fnJsonDecode($this->_api('getSystem'), true);
+                $this->arrCache['getSystem'] = $this->fnJsonDecode($this->api('getSystem'), true);
             }
             return $this->arrCache['getSystem'];
         } else {
-            return $this->fnJsonDecode($this->_api('getSystem'), true);
+            return $this->fnJsonDecode($this->api('getSystem'), true);
         }
     }
     public function system_getLinuxDistro()
