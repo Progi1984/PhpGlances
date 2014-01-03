@@ -1,7 +1,7 @@
 <?php
 namespace Progi1984;
 
-class Phpglances
+class PhpGlances
 {
     const VERSION = '0.2';
 
