@@ -228,7 +228,8 @@ class PhpGlances
 
             // convert JS notation to PHP notation
             $a = ($pbAssoc) ? '' : '(object) ';
-            $psString = strtr($psString, array(':' => '=>', '[' => 'array(', '{' => "{$a}array(", ']' => ')', '}' => ')'));
+            $arrayTRTR = array(':' => '=>', '[' => 'array(', '{' => "{$a}array(", ']' => ')', '}' => ')');
+            $psString = strtr($psString, $arrayTRTR);
 
             // remove leading zeros to prevent incorrect type casting
             $psString = preg_replace('~([\s\(,>])(-?)0~', '$1$2', $psString);
@@ -265,7 +266,7 @@ class PhpGlances
             curl_setopt($this->oCurl, CURLOPT_POSTFIELDS, $psContent);
             $res = curl_exec($this->oCurl);
             if ($res === false) {
-                trigger_error(__CLASS__.' > '.__METHOD__.'(l.'.__LINE__.') : '.curl_error($this->oCurl), E_USER_WARNING);
+                trigger_error(__CLASS__.'>'.__METHOD__.'(l.'.__LINE__.') : '.curl_error($this->oCurl), E_USER_WARNING);
                 return false;
             } else {
                 return $this->fnXmlRpcDecode($res);
@@ -280,8 +281,8 @@ class PhpGlances
             $oCtx = stream_context_create($params);
             $oStream = @fopen($this->url.':'.$this->port.'/RPC2', 'rb', false, $oCtx);
             if (!$oStream) {
-                if (isset($php_errormsg) && preg_match("/401/", $php_errormsg)){
-                    header("HTTP/1.1 401 Authentication failed");  
+                if (isset($php_errormsg) && preg_match("/401/", $php_errormsg)) {
+                    header("HTTP/1.1 401 Authentication failed");
                 } else {
                     header("HTTP/1.1 403 Forbidden");
                 }
@@ -290,7 +291,7 @@ class PhpGlances
             $res = @stream_get_contents($oStream);
             fclose($oStream);
             if ($res === false || empty($res)) {
-                $this->error = __CLASS__.' > '.__METHOD__.'(l.'.__LINE__.') : Problem reading data from '.$this->url.'/RPC2';
+                $this->error = __CLASS__.'>'.__METHOD__.'(l.'.__LINE__.') : Reading data from '.$this->url.'/RPC2';
                 return false;
             } else {
                 $res = $this->fnXmlRpcDecode($res);
