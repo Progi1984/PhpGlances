@@ -5,37 +5,37 @@ class PhpGlances
 {
     const VERSION = '0.2';
 
-    private $_url;
-    private $_port = 80;
-    private $_error = '';
-    private $_useCache = false;
-    private $_arrCache = array();
+    private $url;
+    private $port = 80;
+    private $error = '';
+    private $useCache = false;
+    private $arrCache = array();
 
-    private $_oCurl;
-    private $_extPHPCurl;
-    private $_extPHPJson;
-    private $_extPHPXMLRPC;
-    private $_extPHPSimpleXML;
+    private $oCurl;
+    private $extPHPCurl;
+    private $extPHPJson;
+    private $extPHPXMLRPC;
+    private $extPHPSimpleXML;
 
     public function __construct($psURL, $piPort)
     {
-        $this->_url             = $psURL;
-        $this->_port            = $piPort;
+        $this->url             = $psURL;
+        $this->port            = $piPort;
 
-        $this->_extPHPCurl      = extension_loaded('curl');
-        $this->_extPHPJson      = extension_loaded('json');
-        $this->_extPHPXMLRPC    = extension_loaded('xmlrpc');
-        $this->_extPHPSimpleXML = extension_loaded('simplexml');
-        if($this->_extPHPCurl == true){
-            $this->_oCurl = curl_init();
+        $this->extPHPCurl      = extension_loaded('curl');
+        $this->extPHPJson      = extension_loaded('json');
+        $this->extPHPXMLRPC    = extension_loaded('xmlrpc');
+        $this->extPHPSimpleXML = extension_loaded('simplexml');
+        if($this->extPHPCurl == true){
+            $this->oCurl = curl_init();
         }
     }
     
     public function __destruct()
     {
-        if($this->_extPHPCurl == true){
-            if($this->_oCurl){
-                curl_close($this->_oCurl);
+        if($this->extPHPCurl == true){
+            if($this->oCurl){
+                curl_close($this->oCurl);
             }
         }
     }
@@ -49,7 +49,7 @@ class PhpGlances
      */
     private function fnXmlRpcEncodeRequest($psString, array $parrArray)
     {
-        if($this->_extPHPXMLRPC == true){
+        if($this->extPHPXMLRPC == true){
             return xmlrpc_encode_request($psString, $parrArray);
         } else {
             $psReturn = '<?xml version="1.0" encoding="iso-8859-1"?>';
@@ -66,10 +66,10 @@ class PhpGlances
      */
     private function fnXmlRpcDecode($psString)
     {
-        if($this->_extPHPXMLRPC == true){
+        if($this->extPHPXMLRPC == true){
             return xmlrpc_decode($psString);
         } else {
-            if($this->_extPHPSimpleXML == true){
+            if($this->extPHPSimpleXML == true){
                 $oXML = simplexml_load_string($psString);
                 // Array
                 if(isset($oXML->params->param->value->array)){
@@ -204,7 +204,7 @@ class PhpGlances
      */
     private function fnJsonDecode($psString, $pbAssoc = false)
     {
-        if($this->_extPHPJson == true){
+        if($this->extPHPJson == true){
             return json_decode($psString, true);
         } else {
             // $matchString = '/(".*?(?<!\\\\)"|\'.*?(?<!\\\\)\')/';
@@ -261,18 +261,18 @@ class PhpGlances
 
     private function _api($psMethod)
     {
-        if($this->_extPHPCurl == true){
-            curl_setopt($this->_oCurl, CURLOPT_HEADER, false);
-            curl_setopt($this->_oCurl, CURLOPT_URL, $this->_url.'/RPC2');
-            curl_setopt($this->_oCurl, CURLOPT_PORT, $this->_port);
-            curl_setopt($this->_oCurl, CURLOPT_POST, true);
-            curl_setopt($this->_oCurl, CURLOPT_HTTPHEADER, array('Content-Type' => 'text/xml'));
-            curl_setopt($this->_oCurl, CURLOPT_RETURNTRANSFER, true);
+        if($this->extPHPCurl == true){
+            curl_setopt($this->oCurl, CURLOPT_HEADER, false);
+            curl_setopt($this->oCurl, CURLOPT_URL, $this->url.'/RPC2');
+            curl_setopt($this->oCurl, CURLOPT_PORT, $this->port);
+            curl_setopt($this->oCurl, CURLOPT_POST, true);
+            curl_setopt($this->oCurl, CURLOPT_HTTPHEADER, array('Content-Type' => 'text/xml'));
+            curl_setopt($this->oCurl, CURLOPT_RETURNTRANSFER, true);
             $psContent = $this->fnXmlRpcEncodeRequest($psMethod, array());
-            curl_setopt($this->_oCurl, CURLOPT_POSTFIELDS, $psContent);
-            $res = curl_exec($this->_oCurl);
+            curl_setopt($this->oCurl, CURLOPT_POSTFIELDS, $psContent);
+            $res = curl_exec($this->oCurl);
             if($res === false){
-                trigger_error(__CLASS__.' > '.__METHOD__.'(l.'.__LINE__.') : '.curl_error($this->_oCurl), E_USER_WARNING);
+                trigger_error(__CLASS__.' > '.__METHOD__.'(l.'.__LINE__.') : '.curl_error($this->oCurl), E_USER_WARNING);
                 return false;
             } else {
                 return $this->fnXmlRpcDecode($res);
@@ -285,7 +285,7 @@ class PhpGlances
                 )
             );
             $oCtx = stream_context_create($params);
-            $oStream = @fopen($this->_url.':'.$this->_port.'/RPC2', 'rb', false, $oCtx);
+            $oStream = @fopen($this->url.':'.$this->port.'/RPC2', 'rb', false, $oCtx);
             if (!$oStream) {
                 if(isset($php_errormsg) && preg_match("/401/", $php_errormsg)) header("HTTP/1.1 401 Authentication failed");
                 else header("HTTP/1.1 403 Forbidden");
@@ -294,15 +294,15 @@ class PhpGlances
             $res = @stream_get_contents($oStream);
             fclose($oStream);
             if ($res === false || empty($res)) {
-                $this->_error = __CLASS__.' > '.__METHOD__.'(l.'.__LINE__.') : Problem reading data from '.$this->_url.'/RPC2';
+                $this->error = __CLASS__.' > '.__METHOD__.'(l.'.__LINE__.') : Problem reading data from '.$this->url.'/RPC2';
                 return false;
             } else {
                 $res = $this->fnXmlRpcDecode($res);
                 if(isset($res['faultCode']) && $res['faultCode'] == 1){
-                    $this->_error = $res['faultString'];
+                    $this->error = $res['faultString'];
                     return false;
                 }
-                $this->_error = '';
+                $this->error = '';
                 return $res;
             }
         }
@@ -310,18 +310,18 @@ class PhpGlances
 
     public function pingServer()
     {
-        if($this->_extPHPCurl == true){
-            curl_setopt($this->_oCurl, CURLOPT_HEADER, false);
-            curl_setopt($this->_oCurl, CURLOPT_URL, $this->_url.'/RPC2');
-            curl_setopt($this->_oCurl, CURLOPT_PORT, $this->_port);
-            curl_setopt($this->_oCurl, CURLOPT_POST, true);
-            curl_setopt($this->_oCurl, CURLOPT_HTTPHEADER, array('Content-Type' => 'text/xml'));
-            curl_setopt($this->_oCurl, CURLOPT_RETURNTRANSFER, 1);
-            curl_setopt($this->_oCurl, CURLOPT_TIMEOUT, 5);
+        if($this->extPHPCurl == true){
+            curl_setopt($this->oCurl, CURLOPT_HEADER, false);
+            curl_setopt($this->oCurl, CURLOPT_URL, $this->url.'/RPC2');
+            curl_setopt($this->oCurl, CURLOPT_PORT, $this->port);
+            curl_setopt($this->oCurl, CURLOPT_POST, true);
+            curl_setopt($this->oCurl, CURLOPT_HTTPHEADER, array('Content-Type' => 'text/xml'));
+            curl_setopt($this->oCurl, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($this->oCurl, CURLOPT_TIMEOUT, 5);
             $psContent = $this->fnXmlRpcEncodeRequest('init', array());
-            curl_setopt($this->_oCurl, CURLOPT_POSTFIELDS, $psContent);
-            curl_exec($this->_oCurl);
-            $iHTTPCode = curl_getinfo($this->_oCurl, CURLINFO_HTTP_CODE);
+            curl_setopt($this->oCurl, CURLOPT_POSTFIELDS, $psContent);
+            curl_exec($this->oCurl);
+            $iHTTPCode = curl_getinfo($this->oCurl, CURLINFO_HTTP_CODE);
             if($iHTTPCode>=200 && $iHTTPCode<300){
                 return true;
             } else {
@@ -335,7 +335,7 @@ class PhpGlances
                 )
             );
             $oCtx = stream_context_create($params);
-            $oStream = @fopen($this->_url.':'.$this->_port.'/RPC2', 'rb', false, $oCtx);
+            $oStream = @fopen($this->url.':'.$this->port.'/RPC2', 'rb', false, $oCtx);
             if ($oStream) {
                 $res = @stream_get_contents($oStream);
                 fclose($oStream);
@@ -354,7 +354,7 @@ class PhpGlances
      */
     public function getError()
     {
-        return $this->_error;
+        return $this->error;
     }
 
     /**
@@ -365,7 +365,7 @@ class PhpGlances
      */
     public function setCacheStatus($bUseCache)
     {
-        $this->_useCache = $bUseCache;
+        $this->useCache = $bUseCache;
         return $this;
     }
 
@@ -376,7 +376,7 @@ class PhpGlances
      */
     public function getCacheStatus()
     {
-        return $this->_useCache;
+        return $this->useCache;
     }
 
     /**
@@ -395,11 +395,11 @@ class PhpGlances
 
     private function getCpu()
     {
-        if($this->_useCache){
-            if(!isset($this->_arrCache['getCpu'])){
-                $this->_arrCache['getCpu'] = $this->fnJsonDecode($this->_api('getCpu'), true);
+        if($this->useCache){
+            if(!isset($this->arrCache['getCpu'])){
+                $this->arrCache['getCpu'] = $this->fnJsonDecode($this->_api('getCpu'), true);
             }
-            return $this->_arrCache['getCpu'];
+            return $this->arrCache['getCpu'];
         } else {
             return $this->fnJsonDecode($this->_api('getCpu'), true);
         }
@@ -485,11 +485,11 @@ class PhpGlances
 
     private function getDiskIO()
     {
-        if($this->_useCache){
-            if(!isset($this->_arrCache['getDiskIO'])){
-                $this->_arrCache['getDiskIO'] = $this->fnJsonDecode($this->_api('getDiskIO'), true);
+        if($this->useCache){
+            if(!isset($this->arrCache['getDiskIO'])){
+                $this->arrCachearrCache['getDiskIO'] = $this->fnJsonDecode($this->_api('getDiskIO'), true);
             }
-            return $this->_arrCache['getDiskIO'];
+            return $this->arrCache['getDiskIO'];
         } else {
             return $this->fnJsonDecode($this->_api('getDiskIO'), true);
         }
@@ -545,11 +545,11 @@ class PhpGlances
 
     private function getFs()
     {
-        if($this->_useCache){
-            if(!isset($this->_arrCache['getFs'])){
-                $this->_arrCache['getFs'] = $this->fnJsonDecode($this->_api('getFs'), true);
+        if($this->useCache){
+            if(!isset($this->arrCache['getFs'])){
+                $this->arrCache['getFs'] = $this->fnJsonDecode($this->_api('getFs'), true);
             }
-            return $this->_arrCache['getFs'];
+            return $this->arrCache['getFs'];
         } else {
             return $this->fnJsonDecode($this->_api('getFs'), true);
         }
@@ -644,11 +644,11 @@ class PhpGlances
 
     private function getLoad()
     {
-        if($this->_useCache){
-            if(!isset($this->_arrCache['getLoad'])){
-                $this->_arrCache['getLoad'] = $this->fnJsonDecode($this->_api('getLoad'), true);
+        if($this->useCache){
+            if(!isset($this->arrCache['getLoad'])){
+                $this->arrCache['getLoad'] = $this->fnJsonDecode($this->_api('getLoad'), true);
             }
-            return $this->_arrCache['getLoad'];
+            return $this->arrCache['getLoad'];
         } else {
             return $this->fnJsonDecode($this->_api('getLoad'), true);
         }
@@ -695,11 +695,11 @@ class PhpGlances
 
     private function getLimits()
     {
-        if($this->_useCache){
-            if(!isset($this->_arrCache['getAllLimits'])){
-                $this->_arrCache['getAllLimits'] = $this->fnJsonDecode($this->_api('getAllLimits'), true);
+        if($this->useCache){
+            if(!isset($this->arrCache['getAllLimits'])){
+                $this->arrCache['getAllLimits'] = $this->fnJsonDecode($this->_api('getAllLimits'), true);
             }
-            return $this->_arrCache['getAllLimits'];
+            return $this->arrCache['getAllLimits'];
         } else {
             return $this->fnJsonDecode($this->_api('getAllLimits'), true);
         }
@@ -850,11 +850,11 @@ class PhpGlances
 
     private function getMem()
     {
-        if($this->_useCache){
-            if(!isset($this->_arrCache['getMem'])){
-                $this->_arrCache['getMem'] = $this->fnJsonDecode($this->_api('getMem'), true);
+        if($this->useCache){
+            if(!isset($this->arrCache['getMem'])){
+                $this->arrCache['getMem'] = $this->fnJsonDecode($this->_api('getMem'), true);
             }
-            return $this->_arrCache['getMem'];
+            return $this->arrCache['getMem'];
         } else {
             return $this->fnJsonDecode($this->_api('getMem'), true);
         }
@@ -966,11 +966,11 @@ class PhpGlances
 
     private function getMemSwap()
     {
-        if($this->_useCache){
-            if(!isset($this->_arrCache['getMemSwap'])){
-                $this->_arrCache['getMemSwap'] = $this->fnJsonDecode($this->_api('getMemSwap'), true);
+        if($this->useCache){
+            if(!isset($this->arrCache['getMemSwap'])){
+                $this->arrCache['getMemSwap'] = $this->fnJsonDecode($this->_api('getMemSwap'), true);
             }
-            return $this->_arrCache['getMemSwap'];
+            return $this->arrCache['getMemSwap'];
         } else {
             return $this->fnJsonDecode($this->_api('getMemSwap'), true);
         }
@@ -1017,11 +1017,11 @@ class PhpGlances
 
     private function getNetwork()
     {
-        if($this->_useCache){
-            if(!isset($this->_arrCache['getNetwork'])){
-                $this->_arrCache['getNetwork'] = $this->fnJsonDecode($this->_api('getNetwork'), true);
+        if($this->useCache){
+            if(!isset($this->arrCache['getNetwork'])){
+                $this->arrCache['getNetwork'] = $this->fnJsonDecode($this->_api('getNetwork'), true);
             }
-            return $this->_arrCache['getNetwork'];
+            return $this->arrCache['getNetwork'];
         } else {
             return $this->fnJsonDecode($this->_api('getNetwork'), true);
         }
@@ -1082,11 +1082,11 @@ class PhpGlances
 
     private function getProcessCount()
     {
-        if($this->_useCache){
-            if(!isset($this->_arrCache['getProcessCount'])){
-                $this->_arrCache['getProcessCount'] = $this->fnJsonDecode($this->_api('getProcessCount'), true);
+        if($this->useCache){
+            if(!isset($this->arrCache['getProcessCount'])){
+                $this->arrCache['getProcessCount'] = $this->fnJsonDecode($this->_api('getProcessCount'), true);
             }
-            return $this->_arrCache['getProcessCount'];
+            return $this->arrCache['getProcessCount'];
         } else {
             return $this->fnJsonDecode($this->_api('getProcessCount'), true);
         }
@@ -1146,11 +1146,11 @@ class PhpGlances
 
     private function getProcessList()
     {
-        if($this->_useCache){
-            if(!isset($this->_arrCache['getProcessList'])){
-                $this->_arrCache['getProcessList'] = $this->fnJsonDecode($this->_api('getProcessList'), true);
+        if($this->useCache){
+            if(!isset($this->arrCache['getProcessList'])){
+                $this->arrCache['getProcessList'] = $this->fnJsonDecode($this->_api('getProcessList'), true);
             }
-            return $this->_arrCache['getProcessList'];
+            return $this->arrCache['getProcessList'];
         } else {
             return $this->fnJsonDecode($this->_api('getProcessList'), true);
         }
@@ -1310,11 +1310,11 @@ class PhpGlances
 
     private function getSensors()
     {
-        if($this->_useCache){
-            if(!isset($this->_arrCache['getSensors'])){
-                $this->_arrCache['getSensors'] = $this->fnJsonDecode($this->_api('getSensors'), true);
+        if($this->useCache){
+            if(!isset($this->arrCache['getSensors'])){
+                $this->arrCache['getSensors'] = $this->fnJsonDecode($this->_api('getSensors'), true);
             }
-            return $this->_arrCache['getSensors'];
+            return $this->arrCache['getSensors'];
         } else {
             return $this->fnJsonDecode($this->_api('getSensors'), true);
         }
@@ -1357,11 +1357,11 @@ class PhpGlances
 
     private function getSystem()
     {
-        if($this->_useCache){
-            if(!isset($this->_arrCache['getSystem'])){
-                $this->_arrCache['getSystem'] = $this->fnJsonDecode($this->_api('getSystem'), true);
+        if($this->useCache){
+            if(!isset($this->arrCache['getSystem'])){
+                $this->arrCache['getSystem'] = $this->fnJsonDecode($this->_api('getSystem'), true);
             }
-            return $this->_arrCache['getSystem'];
+            return $this->arrCache['getSystem'];
         } else {
             return $this->fnJsonDecode($this->_api('getSystem'), true);
         }
